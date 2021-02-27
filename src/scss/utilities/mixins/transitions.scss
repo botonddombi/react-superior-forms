@@ -1,0 +1,7 @@
+@mixin transition($args...) {
+    transition: $args;
+}
+
+@mixin general-transition {
+    @include transition(all $timeline-base ease);
+}

@@ -1,0 +1,11 @@
+@import 'styles/utilities';
+
+.input {
+    &-wrapper {
+        margin-bottom: 0.5em;
+
+        > label {
+            margin-bottom: 0.3em;
+        }
+    }
+}

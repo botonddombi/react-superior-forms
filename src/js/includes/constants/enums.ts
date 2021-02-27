@@ -1,0 +1,42 @@
+/* eslint-disable no-unused-vars */
+export enum InputTypes {
+    Email = 'email',
+    Password = 'password',
+    Text = 'text',
+    Number = 'number',
+    Custom = 'custom'
+}
+
+export enum InputValidatorTypes {
+    Required = 'required',
+
+    Email = 'email',
+    Regex = 'regex',
+
+    BetweenRange = 'between',
+    Minimum = 'min',
+    Maximum = 'max',
+
+    URL = 'url',
+    Custom = 'custom',
+}
+
+export enum InputFormatterTypes {
+    Email = 'email',
+
+    DiscardRegex = 'regex_discard',
+
+    Maximum = 'max',
+
+    Number = 'number',
+
+    Numeric = 'numeric',
+    Alphanumeric = 'alphanumeric',
+
+    Custom = 'custom',
+}
+
+export enum InputEventTypes {
+    Change = 'change',
+    Validate = 'validate',
+}
