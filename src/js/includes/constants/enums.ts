@@ -11,6 +11,7 @@ export enum InputValidatorTypes {
     Required = 'required',
 
     Email = 'email',
+    Number = 'number',
     Regex = 'regex',
 
     BetweenRange = 'between',
@@ -39,4 +40,11 @@ export enum InputFormatterTypes {
 export enum InputEventTypes {
     Change = 'change',
     Validate = 'validate',
+}
+
+export enum SubmitPhase {
+    Stale = 'stale',
+    Loading = 'loading',
+    Success = 'success',
+    Fail = 'fail',
 }

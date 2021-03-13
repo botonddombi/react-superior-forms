@@ -1,3 +1,15 @@
 import React from 'react';
 
-export const FormDefaultsContext = React.createContext({});
+import type {InputDefaults} from 'typings/form';
+import {SubmitPhase} from 'constants/enums';
+
+export type FormContextType = {
+    inputDefaults: InputDefaults,
+
+    submitPhase: SubmitPhase,
+    submitAttempted: boolean,
+
+    onSubmit: (event: React.SyntheticEvent) => void
+};
+
+export const FormContext : React.Context<FormContextType> = React.createContext(null);

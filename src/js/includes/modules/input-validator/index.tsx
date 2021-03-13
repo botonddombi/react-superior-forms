@@ -49,6 +49,9 @@ export function assertValidation(
         }
         break;
 
+    case InputValidatorTypes.Number:
+        return Boolean(String(value).match(/^(-|\+)?[0-9]+(\.[0-9]+)?$/));
+
     case InputValidatorTypes.Email:
         return Boolean(String(value).match(/^\S+@\S+\.\S+$/));
 
@@ -68,13 +71,13 @@ export function assertValidation(
 
     case InputValidatorTypes.Minimum:
         if (validation.arguments && validation.arguments.length) {
-            return isBetween([validation.arguments[0], Number.MAX_VALUE], value);
+            return isBetween([validation.arguments[0], Number.POSITIVE_INFINITY], value);
         }
         break;
 
     case InputValidatorTypes.Maximum:
         if (validation.arguments && validation.arguments.length) {
-            return isBetween([Number.MIN_VALUE, validation.arguments[0]], value);
+            return isBetween([Number.NEGATIVE_INFINITY, validation.arguments[0]], value);
         }
         break;
 
@@ -105,6 +108,8 @@ export function getValidationMessage(
     switch (validation.type) {
     case InputValidatorTypes.Required:
         return 'Required';
+    case InputValidatorTypes.Number:
+        return 'Not a number';
     case InputValidatorTypes.Email:
         return 'Not an email';
     case InputValidatorTypes.BetweenRange:

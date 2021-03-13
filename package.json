@@ -19,7 +19,8 @@
   "scripts": {
     "watch": "cross-env NODE_ENV=development webpack --watch",
     "production": "cross-env NODE_ENV=production webpack",
-    "serve": "cross-env SERVE=true webpack serve"
+    "serve": "cross-env SERVE=true webpack serve",
+    "serve-ie11": "cross-env SERVE=true IE11=true webpack serve"
   },
   "devDependencies": {
     "@babel/core": "^7.12.16",

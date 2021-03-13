@@ -5,14 +5,15 @@ import styles from 'styles/form/layout/inputs/input.scss';
 
 import type {InputComponentProps} from '../input/input-component-wrapper';
 
-import type {InputProps} from '../input';
+import type {InputType} from '../input';
 
 import Input from '../input';
 import {InputTypes} from 'constants/enums';
+import {InputComponent} from '../input/input-component-wrapper';
 
 type DefaultInputTypes = 'text' | 'password';
 
-type InputWrapperProps = Omit<InputProps, 'component'>;
+type InputWrapperProps = Omit<InputType, 'component'>;
 
 type BasicInputProps = InputWrapperProps & {
     defaultType: DefaultInputTypes,
@@ -24,42 +25,73 @@ type BasicInputComponentProps = InputComponentProps & {
 
 /**
  * The input tag for the basic input.
- * @param {BasicInputComponentProps} props
- * @return {JSX.Element}
  */
-function BasicInputComponent(props : BasicInputComponentProps) : JSX.Element {
+class BasicInputComponent
+    extends React.Component<BasicInputComponentProps>
+    implements InputComponent {
+    private input : React.RefObject<HTMLInputElement>;
+
+    /**
+     * @param {BasicInputComponentProps} props
+     */
+    constructor(props : BasicInputComponentProps) {
+        super(props);
+
+        this.input = React.createRef();
+
+        this.onChange = this.onChange.bind(this);
+        // this.focus = this.focus.bind(this);
+    }
+
+    /**
+     * Focuses the input element.
+     */
+    focus() {
+        this.input.current.focus();
+    }
+
     /**
      * Calls the parent onChange event to update the current value of the input.
      * @param {React.ChangeEvent<HTMLInputElement>} event The original 'change' event.
      */
-    function onChange(event : React.ChangeEvent<HTMLInputElement>) {
-        props.onChange(event.target.value);
+    onChange(event : React.ChangeEvent<HTMLInputElement>) {
+        this.props.onChange(event.target.value);
     }
 
-    return <input
-        className={
-            classNames(
-                styles.input,
-                `${styles.input}-type-${props.type}`,
-                {
-                    [`${styles.input}--invalid`]:
-                    props.failedValidators && props.failedValidators.length,
-                },
-                props.className,
-            )
-        }
+    /**
+     * Renders the input element and applies a ref to it.
+     * @return {React.ReactNode}
+     */
+    render() : React.ReactNode {
+        const props = this.props;
 
-        name={props.name}
+        return <input
+            className={
+                classNames(
+                    styles.input,
+                    `${styles.input}-type-${props.type}`,
+                    {
+                        [`${styles.input}--invalid`]:
+                        props.validationMessage,
+                    },
+                    props.className,
+                )
+            }
 
-        value={props.value ? props.value : ''}
+            name={props.name}
 
-        type={props.defaultType}
+            value={props.value ?? ''}
 
-        required={props.required}
-        disabled={props.disabled}
+            type={props.defaultType}
 
-        onChange={onChange}
-    />;
+            required={props.required}
+            disabled={props.disabled}
+
+            onChange={this.onChange}
+
+            ref={this.input}
+        />;
+    }
 }
 
 /**

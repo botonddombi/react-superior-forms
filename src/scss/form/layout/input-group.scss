@@ -1,12 +1,10 @@
 @import 'styles/utilities';
 
-.input {
-    &-group {
-        padding: 0;
-        border: 0;
+.input-group {
+    padding: 0;
+    border: 0;
 
-        > legend {
-            font-weight: $font-weight-bold;
-        }
+    > legend {
+        font-weight: $font-weight-bold;
     }
 }

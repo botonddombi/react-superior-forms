@@ -1,0 +1,9 @@
+@import 'styles/utilities';
+
+.submit-status {
+    margin-left: 1em;
+
+    &--fail {
+        color: $color-error;
+    }
+}

@@ -1,4 +1,4 @@
-import React, {useContext, useEffect, useMemo} from 'react';
+import React, {useContext, useEffect, useMemo, useCallback} from 'react';
 
 import {InputTypes, InputValidatorTypes, InputFormatterTypes} from 'constants/enums';
 
@@ -12,12 +12,16 @@ import {
 
 import {InputProps} from '.';
 
-import {FormDefaultsContext} from '../../context';
+import {FormContext} from '../../context';
 
-import InputValidatorWrapper from './input-validator-wrapper';
+import InputValidationWrapper from './input-validation-wrapper';
 
 import {format} from 'modules/input-formatter';
 import {process} from 'modules/input-processor';
+
+export interface InputComponent {
+    focus: () => void,
+}
 
 export type InputComponentProps = {
     className?: string,
@@ -29,6 +33,7 @@ export type InputComponentProps = {
     type?: InputTypes,
 
     failedValidators?: Array<InputValidator|CustomInputValidator>,
+    validationMessage?: string|JSX.Element,
 
     disabled?: boolean,
     required?: boolean,
@@ -37,8 +42,12 @@ export type InputComponentProps = {
 };
 
 type InputComponentWrapperProps = InputProps & {
+    innerRef: React.RefObject<HTMLDivElement>,
+
     value: any,
-    onChange?: (value: any) => void,
+    dirty: boolean,
+
+    onChange?: (value: any, initialCall: boolean) => void,
     onValidate?: (failedValidators: Array<InputValidator|CustomInputValidator>) => void
 }
 
@@ -49,7 +58,7 @@ type InputComponentWrapperProps = InputProps & {
  * @return {JSX.Element}
  */
 export default function InputComponentWrapper(props : InputComponentWrapperProps) : JSX.Element {
-    const inputDefaults : InputDefaults = useContext(FormDefaultsContext);
+    const inputDefaults : InputDefaults = useContext(FormContext).inputDefaults;
 
     /**
      * Builds the final array of validators from the 'required', 'validate' properties.
@@ -215,14 +224,12 @@ export default function InputComponentWrapper(props : InputComponentWrapperProps
 
     const processor = props.process ?? inputDefaults.process ?? false;
 
-    // console.log(formatters, validators, processor);
-
     /**
-     * The event that is called when the input value changes.
-     * It will format, and process the value if necessary.
-     * @param {any} value The current value, formatted, and processed.
+     * Formats and processes the value if necessary.
+     * @param {any} value The current value to format and process.
+     * @return {any} The current value formatted and processed.
      */
-    function onChange(value : any) : void {
+    function formatAndProcessValue(value : any) {
         formatters.forEach((formatter) => {
             value = format(formatter, value, props.type);
         });
@@ -231,15 +238,27 @@ export default function InputComponentWrapper(props : InputComponentWrapperProps
             value = process(processor, value, props.type);
         }
 
-        props.onChange(value);
+        return value;
     }
+
+    const value = useMemo(() : any => formatAndProcessValue(props.value), [props.value]);
+
+    /**
+     * The event that is called when the input value changes.
+     * It will format, and process the value if necessary.
+     * @param {any} value The current value to format and process.
+     * @param {boolean} initialCall Whether this is the initial change call.
+     */
+    const onChange = useCallback((value : any, initialCall : boolean = false) : void => {
+        props.onChange(formatAndProcessValue(value), initialCall);
+    }, []);
 
     /**
      * This is to format and process the default value of the input.
      * It is only called once, when the component mounts.
      */
     useEffect(() => {
-        onChange(props.value);
+        onChange(props.value, true);
     }, []);
 
     const componentProps : InputComponentProps = {
@@ -255,8 +274,9 @@ export default function InputComponentWrapper(props : InputComponentWrapperProps
     const component = React.cloneElement(props.component, componentProps);
 
     if (validators.length) {
-        return <InputValidatorWrapper
-            value={props.value}
+        return <InputValidationWrapper
+            value={value}
+            dirty={props.dirty}
             type={componentProps.type}
             validators={validators}
             hideValidateMessage={
@@ -264,9 +284,11 @@ export default function InputComponentWrapper(props : InputComponentWrapperProps
             }
             required={componentProps.required}
             onValidate={props.onValidate}
+
+            innerRef={props.innerRef}
         >
             {component}
-        </InputValidatorWrapper>;
+        </InputValidationWrapper>;
     }
 
     return component;

@@ -1,6 +1,7 @@
 const mode = process.env.NODE_ENV;
 const isDevelopment = (mode == 'development');
 const isBeingServed = (process.env.SERVE == 'true');
+const isBeingServedForIE11 = isBeingServed && (process.env.IE11 == 'true');
 const shouldMinimize = !(isBeingServed || isDevelopment);
 
 const path = require('path');
@@ -64,7 +65,7 @@ module.exports = {
         aggregateTimeout : 400,
 		ignored: '/node_modules/'
     },
-    target: isBeingServed ? 'web' : 'browserslist',
+    target: (!isBeingServed || isBeingServedForIE11) ? 'browserslist' : 'web',
     entry,
     externals,
     output : {
@@ -99,6 +100,7 @@ module.exports = {
                         loader: 'css-loader',
                         options: {
                             importLoaders: 1,
+                            sourceMap: isBeingServed,
                             modules: {
                                 localIdentName: 'rsf-[local]'
                             },
@@ -169,7 +171,7 @@ module.exports = {
         },
         modules: ['node_modules']
     },
-    devtool: 'source-map',
+    devtool: isBeingServed ? 'source-map' : 'hidden-source-map',
     devServer: {
         contentBase: path.join(__dirname, 'demo/dist'),
         inline: true,

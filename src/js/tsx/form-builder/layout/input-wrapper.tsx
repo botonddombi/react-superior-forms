@@ -1,4 +1,4 @@
-import React, {useRef, useState} from 'react';
+import React, {useRef, useState, useCallback} from 'react';
 
 import classNames from 'classnames';
 
@@ -42,14 +42,14 @@ export default function InputWrapper(props : InputWrapperProps) : JSX.Element {
      * Captures the validation of all inputs placed in this group.
      * Additionally, checks whether all inputs are clear of failed validators.
      */
-    function onValidate() {
+    const onValidate = useCallback(() => {
         setHasFailedValidation(
             inputs.current.reduce(
                 (previous, current) => previous || current.failedValidators.length,
                 false,
             ),
         );
-    }
+    }, []);
 
     return <React.Fragment>
         {props.before ?? ''}

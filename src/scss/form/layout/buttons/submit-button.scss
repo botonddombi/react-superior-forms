@@ -1,0 +1,57 @@
+@import 'styles/utilities';
+
+@keyframes rotate {
+    0% {
+        transform: translate(-50%, -50%) rotate(0deg);
+    }
+
+    100% {
+        transform: translate(-50%, -50%) rotate(360deg);
+    }
+}
+
+.submit-button {
+    $this: &;
+
+    position: relative;
+    padding: 0.4em 3em;
+    border: 1px solid $color-border;
+    margin-top: 1em;
+    background: none;
+    border-radius: 5px;
+    outline: 0;
+
+    &::before {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        width: 20px;
+        height: 20px;
+        border: 2px solid $color-text;
+        border-top-color: transparent;
+        animation: rotate 1s linear infinite;
+        border-radius: 50%;
+        content: '';
+        opacity: 0;
+    }
+
+    &:hover,
+    &--loading {
+        border-color: $color-outline;
+        background: $color-outline;
+        color: $color-text;
+    }
+
+    &:active {
+        background: darken($color-outline, 5%);
+    }
+
+    &--loading,
+    &--loading:hover {
+        color: transparent;
+
+        &::before {
+            opacity: 1;
+        }
+    }
+}

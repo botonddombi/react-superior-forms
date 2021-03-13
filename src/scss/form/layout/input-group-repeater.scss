@@ -1,0 +1,64 @@
+@import 'styles/utilities';
+
+.input-group-repeater {
+    &-button {
+        position: relative;
+        width: 30px;
+        height: 30px;
+        border: 1px solid $color-border;
+        background: none;
+        border-radius: 50%;
+        outline: 0;
+
+        &::before,
+        &::after {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 60%;
+            height: 2px;
+            background: rgba($color-border, 0.6);
+            content: '';
+            transform: translate(-50%, -50%);
+        }
+
+        &::after {
+            transform: translate(-50%, -50%) rotate(90deg);
+        }
+
+        &:hover {
+            &::before,
+            &::after {
+                background: $color-text;
+            }
+        }
+
+        &-add {
+            margin-top: 0.5em;
+
+            &:hover {
+                border-color: $color-outline;
+                background: $color-outline;
+            }
+        }
+
+        &-remove {
+            margin-left: 1em;
+            transform: rotate(45deg);
+
+            &:hover {
+                border-color: $color-error;
+                background: $color-error;
+            }
+        }
+    }
+
+    &-entry {
+        display: flex;
+        align-items: center;
+
+        span {
+            flex-grow: 1;
+        }
+    }
+}

@@ -1,4 +1,82 @@
 ![Logo](docs/images/logo.svg)
-## A simple yet convenient way to build forms in react.
+## Helps you easily build a form with input processing, validation and formatting.
+## Features include:
+* Customizable Input
+* Basic Inputs (Text, Email, Number, Password)
+* [Grouping](#lets-put-the-fields-into-groups)
+* [Repeaters](#lets-repeat-these-fields)
+* AJAX Submit & Loader
+* Validation (including the displayal of messages)
+* Full customization using **hooks**, **events** and **options API**
+* Form Builder API (**JSON** -> *Form*)
+### Aims for customizable UI with classes, includes minimal CSS.
+# 1. Introduction:
+A basic form to create a user:
+```JSX
+import Form, {TextInput, NumberInput, SubmitButton} from 'react-superior-forms';
+
+<Form route="/create/user" json={true}>
+    <label>Username</label>
+    <TextInput name="username"/>
+
+    <label>Favourite Number</label>
+    <NumberInput name="favourite_number" process={true}/>
+
+    <SubmitButton/>
+</Form>;
+```
+Example request:
+```JS
+{username: "edward_baldwin", favourite_number: 10}
+```
+---
+## Let's put the fields into groups!
+```JSX
+import Form, {InputGroup, TextInput, NumberInput, SubmitButton} from 'react-superior-forms';
+
+<Form route="/create/user" json={true}>
+    <InputGroup name="user">
+        <label>Username</label>
+        <TextInput name="username"/>
+    </InputGroup>
+
+    <InputGroup name="user_preferences">
+        <label>Favourite Number</label>
+        <NumberInput name="favourite_number" process={true}/>
+    </InputGroup>
+
+    <SubmitButton/>
+</Form>;
+```
+Example request:
+```JS
+{user: {username: "edward_baldwin"}, user_preferences: {favourite_number: 10}}
+```
+---
+## Let's repeat these fields!
+```JSX
+import Form, {InputGroupRepeater, TextInput, NumberInput, SubmitButton} from 'react-superior-forms';
+
+<Form route="/create/users" json={true}>
+    <InputGroupRepeater name="users" entries={2} minEntries={1} maxEntries={5}>
+        <label>Username</label>
+        <TextInput name="username"/>
+
+        <label>Favourite Number</label>
+        <NumberInput name="favourite_number" process={true}/>
+    </InputGroupRepeater>
+
+    <SubmitButton/>
+</Form>;
+```
+Example request:
+```JS
+{
+    users: [
+        {username: "edward_baldwin", favourite_number: 10},
+        {username: "gordo_stevens", favourite_number: 22}
+    ]
+}
+```
 ---
 ### **This repository is currently in the making. The package is not yet published.**
