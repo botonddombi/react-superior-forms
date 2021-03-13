@@ -1,6 +1,6 @@
 ![Logo](docs/images/logo.svg)
-## Helps you easily build a form with input processing, validation and formatting.
-## Features include:
+#### Helps you easily build a form with input processing, validation and formatting.
+#### Features include:
 * Customizable Input
 * Basic Inputs (Text, Email, Number, Password)
 * [Grouping](#lets-put-the-fields-into-groups)
@@ -9,7 +9,7 @@
 * Validation (including the displayal of messages)
 * Full customization using **hooks**, **events** and **options API**
 * Form Builder API (**JSON** -> *Form*)
-### Aims for customizable UI with classes, includes minimal CSS.
+#### Aims for customizable UI with classes, includes minimal CSS.
 # 1. Introduction:
 A basic form to create a user:
 ```JSX
