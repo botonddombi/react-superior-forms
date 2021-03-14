@@ -4,11 +4,16 @@ body {
     padding: 20px;
     background: #FEFEFE;
     font-size: 14px;
+    overflow: scroll;
 
     display: flex;
     justify-content: center;
 
     > div {
         width: 600px;
+    }
+
+    input {
+        margin-bottom: 0.3em;
     }
 }

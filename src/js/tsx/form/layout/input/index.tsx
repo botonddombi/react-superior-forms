@@ -35,7 +35,7 @@ export type InputType = {
     disabled?: boolean,
 
     onChange?: (value : any) => void
-    onValidate?: (failedValidators: InputFailedValidators) => void
+    onValidate?: (failedValidators: InputFailedValidators, inputComponent: Input) => void
 };
 
 export type InputProps = InputType & {
@@ -131,7 +131,7 @@ export default class Input extends React.Component<InputProps, InputState> {
         });
 
         if (typeof this.props.onValidate === 'function') {
-            this.props.onValidate(failedValidators);
+            this.props.onValidate(failedValidators, this);
         }
     }
 

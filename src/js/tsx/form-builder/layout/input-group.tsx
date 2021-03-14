@@ -17,7 +17,7 @@ import {
 
 import * as Inputs from '../../form/layout/input-types';
 
-import InputGroupRepeater from './input-group-repeater';
+import InputGroupRepeater, {InputGroupRepeaterFailedValidators} from './input-group-repeater';
 
 const inputTypes = Object.values(Inputs);
 
@@ -45,7 +45,10 @@ export type InputGroupOptions = {
 export type InputGroupProps = InputGroupOptions & {
     key?: number,
     children?: React.ReactNode|JSX.Element|JSX.Element[],
-    onValidate?: (failedValidators : InputGroupFailedValidators) => void,
+    onValidate?: (
+        failedValidators : InputGroupFailedValidators,
+        inputComponent: Inputs.Input|InputGroup|InputGroupRepeater
+    ) => void,
 };
 
 export type InputGroupFailedValidators = Array<
@@ -92,16 +95,39 @@ class InputGroup extends React.Component<InputGroupProps, InputGroupState> {
     /**
      * Captures the validation of all inputs placed in this group.
      * Additionally, checks whether all inputs are clear of failed validators.
+     * @param {
+     *  InputFailedValidators|
+     *  InputGroupFailedValidators|
+     *  InputGroupRepeaterFailedValidators
+     * } currentfailedValidators The failed validators.
+     * @param {Inputs.Input|InputGroup|InputGroupRepeater} inputComponent The component that was validated.
      */
-    onValidate() {
+    onValidate(
+        currentfailedValidators:
+            InputFailedValidators |
+            InputGroupFailedValidators |
+            InputGroupRepeaterFailedValidators,
+        inputComponent: Inputs.Input|InputGroup|InputGroupRepeater,
+    ) {
+        const failedValidators = this.inputComponents.current
+            .reduce(
+                (previous, current) => [
+                    ...(
+                        current === inputComponent ?
+                            currentfailedValidators :
+                            current.failedValidators
+                    ),
+                    ...previous,
+                ],
+                [],
+            );
+
         this.setState({
-            failedValidators: this.inputComponents.current
-                .filter((current) => current.failedValidators.length)
-                .map((current) => current.failedValidators),
+            failedValidators,
         });
 
         if (typeof this.props.onValidate === 'function') {
-            this.props.onValidate(this.state.failedValidators);
+            this.props.onValidate(failedValidators, this);
         }
     }
 

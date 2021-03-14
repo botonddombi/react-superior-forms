@@ -10,8 +10,10 @@ import {mapRefs, objectToFormData} from 'modules/helpers';
 
 import * as Inputs from './layout/input-types';
 
-import InputGroup from '../form-builder/layout/input-group';
-import InputGroupRepeater from '../form-builder/layout/input-group-repeater';
+import {InputFailedValidators} from './layout/input';
+
+import InputGroup, {InputGroupFailedValidators} from '../form-builder/layout/input-group';
+import InputGroupRepeater, {InputGroupRepeaterFailedValidators} from '../form-builder/layout/input-group-repeater';
 
 import {FormContext} from './context';
 import {SubmitPhase} from 'constants/enums';
@@ -228,12 +230,46 @@ export default function Form(props : FormProps) : JSX.Element {
     /**
      * Captures the validation of all inputs placed in this form.
      * Additionally, checks whether all inputs are clear of failed validators.
+     * @param {InputFailedValidators|InputGroupFailedValidators|InputGroupRepeaterFailedValidators} failedValidators
+     * The failed validators.
+     * @param {Inputs.Input|InputGroup|InputGroupRepeater} inputComponent The component that was validated.
      */
-    const onValidate = useCallback(() => {
+    const onValidate = useCallback(
+        (
+            failedValidators:
+                InputFailedValidators |
+                InputGroupFailedValidators |
+                InputGroupRepeaterFailedValidators,
+            inputComponent: Inputs.Input|InputGroup|InputGroupRepeater,
+        ) => {
+        // console.log(inputComponent, inputComponents.current[0], inputComponents.current[0] == inputComponent);
+        console.log(failedValidators);
+        // console.log(inputComponents.current
+        //     .reduce(
+        //         (previous, current) => [
+        //             ...(
+        //                 current === inputComponent ?
+        //                     failedValidators :
+        //                     current.failedValidators
+        //             ),
+        //             ...previous,
+        //         ],
+        //         [],
+        //     ));
+
         setFailedValidators(
             inputComponents.current
-                .filter((current) => current.failedValidators.length)
-                .map((current) => current.failedValidators),
+                .reduce(
+                    (previous, current) => [
+                        ...(
+                            current === inputComponent ?
+                                failedValidators :
+                                current.failedValidators
+                        ),
+                        ...previous,
+                    ],
+                    [],
+                ),
         );
     }, []);
 

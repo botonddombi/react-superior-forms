@@ -27,13 +27,14 @@ type InputGroupRepeaterProps = InputGroupRepeaterOptions & {
     name?: string,
 
     onValidate?: (
-        failedValidators : InputGroupRepeaterFailedValidators
+        failedValidators: InputGroupRepeaterFailedValidators,
+        inputGroupComponent: InputGroupRepeater
     ) => void,
 
     inputGroupProps?: InputGroupProps
 };
 
-type InputGroupRepeaterFailedValidators = Array<InputGroupFailedValidators>;
+export type InputGroupRepeaterFailedValidators = Array<InputGroupFailedValidators>;
 
 type InputGroupRepeaterState = {
     failedValidators : InputGroupRepeaterFailedValidators,
@@ -120,16 +121,34 @@ class InputGroupRepeater extends React.Component<InputGroupRepeaterProps, InputG
     /**
      * Captures the validation of all inputs placed in this group.
      * Additionally, checks whether all inputs are clear of failed validators.
+     * Additionally, checks whether all inputs are clear of failed validators.
+     * @param {InputGroupFailedValidators} currentfailedValidators The failed validators.
+     * @param {InputGroup} inputGroupComponent The group component that was validated.
      */
-    onValidate() {
+    onValidate(
+        currentfailedValidators: InputGroupFailedValidators,
+        inputGroupComponent: InputGroup,
+    ) {
+        const failedValidators = this.inputGroups.current
+            .reduce(
+                (previous, current) => [
+                    ...(
+                        current === inputGroupComponent ?
+                            currentfailedValidators :
+                            current.failedValidators
+                    ),
+                    ...previous,
+                ],
+                [],
+            );
+
         this.setState({
-            failedValidators: this.inputGroups.current
-                .filter((current) => current.failedValidators.length)
-                .map((current) => current.failedValidators),
+            failedValidators,
         });
 
+
         if (typeof this.props.onValidate === 'function') {
-            this.props.onValidate(this.state.failedValidators);
+            this.props.onValidate(failedValidators, this);
         }
     }
 

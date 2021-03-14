@@ -20,56 +20,66 @@ import Form, {FormBuilder, InputTypes, InputGroup, InputGroupRepeater, NumberInp
 
 // const form =
 // <Form route="/create/user" json={true}>
-//     <InputGroup name="user">
+//     {/* <InputGroup name="user">
 //         <label>Username</label>
 //         <TextInput name="name" validate={'max:50'} format={true}/>
-//     </InputGroup>
+//     </InputGroup> */}
 //     <InputGroup name="user_preferences">
 //         <label>Favourite Number</label>
-//         <NumberInput name="favourite_number" validate={true} format={true} process={true}/>
+//         <NumberInput name="favourite_number" validate={true} process={true}/>
 //     </InputGroup>
 
 //     <SubmitButton/>
 // </Form>;
 
-const form =
-<Form route="/create/users" json={true}>
-    <InputGroupRepeater name="users" entries={1} minEntries={1} maxEntries={5}>
-        {/* <label>Username</label>
-        <TextInput name="name"/> */}
-
-        <label>Favourite Number</label>
-        <NumberInput name="favourite_number" validate={true} format={true} process={true}/>
-    </InputGroupRepeater>
-
-    <SubmitButton/>
-</Form>;
-
-// const form = <Form
-//     route="/create-users"
-//     json={true}
-// >
-//     <InputGroupRepeater
-//         name="users"
-//         entries={2}
-//         maxEntries={4}
-//         defaultValue={
-//             [
-//                 {username: 'botika'},
-//                 {username: 'lacika', favourite_number: 35},
-//             ]
-//         }
-//         legend={(props) => <>Your {props.index + 1}. User</>}
-//     >
+// const form =
+// <Form route="/create/users" json={true}>
+//     <InputGroupRepeater name="users" legend={'User'} entries={1} minEntries={1} maxEntries={5}>
 //         <label>Username</label>
-//         <TextInput name="username" process={true} format={true} validate={true} required={true}/>
-//         <label>Number:</label>
-//         <NumberInput name="favourite_number" validate={true} required={true}/>
+//         <TextInput name="name"/>
+
+//         <label>Favourite Number</label>
+//         <NumberInput name="favourite_number" validate={true} format={true} process={true}/>
 //     </InputGroupRepeater>
 
 //     <SubmitButton/>
-//     <SubmitStatus/>
 // </Form>;
+
+// import Form, {Input} from 'react-superior-forms';
+
+// function YourCustomInputComponent(props: any) {
+//     return <input type="text" disabled={props.disabled} onChange={props.onChange}/>;
+// }
+
+// const form = <Form route="asd">
+//     <Input name="custom_stuff" type={InputTypes.Number} component={<YourCustomInputComponent/>} validate={true}/>
+// </Form>;
+
+const form = <Form
+    route="/create-users"
+    json={true}
+>
+    <InputGroupRepeater
+        name="users"
+        entries={2}
+        maxEntries={4}
+        defaultValue={
+            [
+                {username: 'botika'},
+                {username: 'lacika', favourite_number: 35},
+            ]
+        }
+        legend={(props) => <>Your {props.index + 1}. User</>}
+    >
+        <label>Username</label>
+        <TextInput name="username" process={true} format={true} validate={true} required={true}/>
+        <label>Number:</label>
+        <NumberInput name="favourite_number" validate={true} required={true}/>
+    </InputGroupRepeater>
+
+    <SubmitButton/>
+    <SubmitStatus/>
+</Form>;
 
 // const form = <Form
 //     route="/test"
