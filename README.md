@@ -311,7 +311,7 @@ It also comes with a default add button to add new entries, and a remove button 
 | removeComponent | The component used for the *button* that is responsible for removing an entry | JSX | <code><button\>Remove this!<\/button\></code> | The default remove component |
 ---
 ## 3.5. SubmitButton
-The **<SubmitButton\/>** is used as the button that fires the *onSubmit* event of the [**<Form\/>**](#31-form).
+The **<SubmitButton\/>** is used as the button that fires the *onSubmit* event of the [**<Form\/>**](#31-form).\
 It acts as the native <code><button type="submit"\></button\></code> or <code><input type="submit"\/></code> element.
 ### Example usage:
 ```JSX
