@@ -183,7 +183,7 @@ or if "validate" property is used, and the input is currently invalid
 | - | - | - | - | - |
 | name | The key to use when submitting the data | string | "username" | "" |
 | defaultValue | The value to initialize the input with | any | <code>"edward_baldwin", 123, [1,2,3]</code> | null |
-| type | The input type. This helps in recognizing the default validator, formatter when they are set to auto (true). | "email", "password", "text", "number", "custom" | "default" |
+| type | The input type. This helps in recognizing the default validator, formatter when they are set to auto (true). | "email", "password", "text", "number", "custom" | "text" | null |
 | validate | The validation to use on the input value. When set to **true**, the validators will be recognized automatically based on the **type** and **required** properties. | boolean \| array \| function \| string | false = No validation<br/>true = The validators will be recognized based on the **type** property.<br/><br/><code>(value) => String(value).startsWith('ez')</code><br/><br/>"max:255"<br/>"between:10,20"<br/><br/><code>[{type: 'custom', assert: (value) => !value, message: () => 'Custom message!'}, 'max:10', {type: 'between', arguments: [10, 20]}]</code> | false |
 | hideValidateMessage | Whether to hide the validation message or not | boolean | false \| true | false |
 | format | The formatting to use on the input value. When set to **true**, the formatters will be recognized based on the **type** and **validate** properties. | boolean \| string \| function \| array | false = No formatting<br/>true = The formatters will be recognized based on the **type** and **validate** properties.<br/><br/><code>(value) => String(value).replace('a', 'b')</code><br/><br/>"max:255"<br/>"alphanumeric"<br/>"regex_discard:/[0-9]/"<br/><br/><code>['max:255', 'alphanumeric', {type: 'regex_discard', arguments: ['/0-9/']}]</code> | false |
@@ -311,7 +311,8 @@ It also comes with a default add button to add new entries, and a remove button 
 | removeComponent | The component used for the *button* that is responsible for removing an entry | JSX | <code><button\>Remove this!<\/button\></code> | The default remove component |
 ---
 ## 3.5. SubmitButton
-The **<SubmitButton\/>** is used as the button that fires the *onSubmit* event of the [**<Form\/>**](#31-form).\
+The **<SubmitButton\/>** is used as the button that fires the *onSubmit* event of the [**<Form\/>**](#31-form).
+\
 It acts as the native <code><button type="submit"\></button\></code> or <code><input type="submit"\/></code> element.
 ### Example usage:
 ```JSX
