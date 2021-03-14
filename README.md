@@ -193,7 +193,7 @@ or if "validate" property is used, and the input is currently invalid
 | onChange | The function to call when the change event occurs | function | <code>(value) => console.log(`Value changed to ${value}`)</code> | null |
 | onValidate | The function to call when the validation event occurs | function | <code>(failedValidators) => console.log(failedValidators)</code> | null |
 ### Basic Inputs
-These inputs were created to supply what the native **<input\>** elements have to offer.
+These inputs were created to supply what the native **<input\>** elements have to offer.\
 List of available basic inputs:
 * TextInput
 * NumberInput
