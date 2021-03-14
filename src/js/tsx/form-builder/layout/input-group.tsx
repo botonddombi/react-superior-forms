@@ -64,7 +64,8 @@ type InputGroupState = {
 export default
 class InputGroup extends React.Component<InputGroupProps, InputGroupState> {
     private static baseClassName = 'input-group';
-    public inputs : React.RefObject<Array<Inputs.Input|InputGroup|InputGroupRepeater>>;
+    private static inputComponentTypes = [...inputTypes, InputGroup, InputGroupRepeater];
+    public inputComponents : React.RefObject<Array<Inputs.Input|InputGroup|InputGroupRepeater>>;
 
     /**
      * @param {InputGroupProps} props
@@ -72,7 +73,7 @@ class InputGroup extends React.Component<InputGroupProps, InputGroupState> {
     constructor(props: InputGroupProps) {
         super(props);
 
-        this.inputs = React.createRef();
+        this.inputComponents = React.createRef();
 
         this.state = {
             failedValidators: [],
@@ -94,7 +95,7 @@ class InputGroup extends React.Component<InputGroupProps, InputGroupState> {
      */
     onValidate() {
         this.setState({
-            failedValidators: this.inputs.current
+            failedValidators: this.inputComponents.current
                 .filter((current) => current.failedValidators.length)
                 .map((current) => current.failedValidators),
         });
@@ -132,8 +133,8 @@ class InputGroup extends React.Component<InputGroupProps, InputGroupState> {
                 {
                     mapRefs(
                         props.children,
-                        [...inputTypes, InputGroup, InputGroupRepeater],
-                        this.inputs,
+                        InputGroup.inputComponentTypes,
+                        this.inputComponents,
                         {
                             onValidate: this.onValidate,
                         },

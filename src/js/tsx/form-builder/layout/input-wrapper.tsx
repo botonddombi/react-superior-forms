@@ -1,4 +1,4 @@
-import React, {useRef, useState, useCallback} from 'react';
+import React, {useRef, useState, useCallback, useMemo} from 'react';
 
 import classNames from 'classnames';
 
@@ -51,6 +51,15 @@ export default function InputWrapper(props : InputWrapperProps) : JSX.Element {
         );
     }, []);
 
+    const children = useMemo(() => mapRefs(
+        props.children,
+        inputTypes,
+        inputs,
+        {
+            onValidate,
+        },
+    ), [props.children]);
+
     return <React.Fragment>
         {props.before ?? ''}
         <div
@@ -66,16 +75,7 @@ export default function InputWrapper(props : InputWrapperProps) : JSX.Element {
         >
             {props.label ? <label>{props.label}</label> : ''}
             {props.beforeInput ?? ''}
-            {
-                mapRefs(
-                    props.children,
-                    inputTypes,
-                    inputs,
-                    {
-                        onValidate,
-                    },
-                )
-            }
+            {children}
             {props.afterInput ?? ''}
         </div>
         {props.after ?? ''}

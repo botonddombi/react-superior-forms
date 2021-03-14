@@ -40,7 +40,7 @@ class BasicInputComponent
         this.input = React.createRef();
 
         this.onChange = this.onChange.bind(this);
-        // this.focus = this.focus.bind(this);
+        this.focus = this.focus.bind(this);
     }
 
     /**

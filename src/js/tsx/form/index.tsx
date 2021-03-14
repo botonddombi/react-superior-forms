@@ -1,4 +1,5 @@
-import React, {useRef, useState, useCallback} from 'react';
+/* eslint-disable */
+import React, {useRef, useState, useCallback, useMemo} from 'react';
 import classNames from 'classnames';
 
 import styles from 'styles/form/index.scss';
@@ -30,7 +31,7 @@ export type FormProps = {
 
     processBeforeSend?: (data: object) => object,
 
-    headers?: object,
+    headers?: {[key: string] : string},
 
     className?: string,
 
@@ -38,6 +39,8 @@ export type FormProps = {
 
     children?: React.ReactNode|React.ReactElement[]|React.ReactElement
 };
+
+const inputComponentTypes = [...inputTypes, InputGroup, InputGroupRepeater];
 
 /**
  * The component that builds the form.
@@ -64,7 +67,7 @@ export default function Form(props : FormProps) : JSX.Element {
 
             switch (component.constructor) {
             case InputGroup: {
-                const invalidInput = findInvalidInput(component.inputs.current);
+                const invalidInput = findInvalidInput(component.inputComponents.current);
                 if (invalidInput) {
                     return invalidInput;
                 }
@@ -103,17 +106,17 @@ export default function Form(props : FormProps) : JSX.Element {
             switch (component.constructor) {
             case InputGroup:
                 data[component.props.name] = {};
-                collectData(data[component.props.name], component.inputs.current);
+                collectData(data[component.props.name], component.inputComponents.current);
                 break;
             case InputGroupRepeater:
                 data[component.props.name] = [];
                 component.inputGroups.current.forEach((inputGroup, index) => {
                     data[component.props.name][index] = {};
-                    collectData(data[component.props.name][index], inputGroup.inputs.current);
+                    collectData(data[component.props.name][index], inputGroup.inputComponents.current);
                 });
                 break;
             default:
-                data[component.props.name] = component.value;
+                data[component.props.name] = component.processedValue;
                 break;
             }
         });
@@ -234,6 +237,15 @@ export default function Form(props : FormProps) : JSX.Element {
         );
     }, []);
 
+    const children = useMemo(() => mapRefs(
+        props.children,
+        inputComponentTypes,
+        inputComponents,
+        {
+            onValidate,
+        },
+    ), [props.children]);
+
     return (
         <FormContext.Provider
             value={{
@@ -255,16 +267,7 @@ export default function Form(props : FormProps) : JSX.Element {
                 }
                 onSubmit={onSubmit}
             >
-                {
-                    mapRefs(
-                        props.children,
-                        [...inputTypes, InputGroup, InputGroupRepeater],
-                        inputComponents,
-                        {
-                            onValidate,
-                        },
-                    )
-                }
+                {children}
             </form>
         </FormContext.Provider>
     );

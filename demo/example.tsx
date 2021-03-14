@@ -34,12 +34,12 @@ import Form, {FormBuilder, InputTypes, InputGroup, InputGroupRepeater, NumberInp
 
 const form =
 <Form route="/create/users" json={true}>
-    <InputGroupRepeater name="users" entries={2} minEntries={1} maxEntries={5}>
-        <label>Username</label>
-        <TextInput name="name"/>
+    <InputGroupRepeater name="users" entries={1} minEntries={1} maxEntries={5}>
+        {/* <label>Username</label>
+        <TextInput name="name"/> */}
 
         <label>Favourite Number</label>
-        <NumberInput name="favourite_number" process={true}/>
+        <NumberInput name="favourite_number" validate={true} format={true} process={true}/>
     </InputGroupRepeater>
 
     <SubmitButton/>

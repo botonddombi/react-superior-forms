@@ -44,6 +44,7 @@ export type InputProps = InputType & {
 
 type InputState = {
     value: any,
+    processedValue: any,
     dirty: boolean,
 
     failedValidators: InputFailedValidators
@@ -65,6 +66,7 @@ export default class Input extends React.Component<InputProps, InputState> {
 
         this.state = {
             value: this.props.defaultValue ?? null,
+            processedValue: this.props.defaultValue ?? null,
             dirty: false,
 
             failedValidators: [],
@@ -94,17 +96,27 @@ export default class Input extends React.Component<InputProps, InputState> {
     }
 
     /**
+     * Gets the current processed value of the input.
+     * @return {any} The current processed value of the input.
+     */
+    get processedValue() : any {
+        return this.state.processedValue;
+    }
+
+    /**
      * The change event that should be called whenever the input component's value has changed.
      * @param {any} value The new value.
+     * @param {any} processedValue The processed new value.
      * @param {boolean} initialCall Whether this is the initial change call.
      */
-    onChange(value : any, initialCall : boolean = false) : void {
+    onChange(value : any, processedValue : any, initialCall : boolean = false) : void {
         if (typeof this.props.onChange === 'function') {
             this.props.onChange(value);
         }
 
         this.setState({
             value,
+            processedValue,
             dirty: this.state.dirty || !initialCall,
         });
     }

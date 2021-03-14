@@ -41,13 +41,13 @@ export type InputComponentProps = {
     onChange?: (value: any) => void,
 };
 
-type InputComponentWrapperProps = InputProps & {
+type InputComponentWrapperProps = Omit<InputProps, 'onChange'> & {
     innerRef: React.RefObject<HTMLDivElement>,
 
     value: any,
     dirty: boolean,
 
-    onChange?: (value: any, initialCall: boolean) => void,
+    onChange?: (value: any, processedValue: any, initialCall: boolean) => void,
     onValidate?: (failedValidators: Array<InputValidator|CustomInputValidator>) => void
 }
 
@@ -225,23 +225,34 @@ export default function InputComponentWrapper(props : InputComponentWrapperProps
     const processor = props.process ?? inputDefaults.process ?? false;
 
     /**
-     * Formats and processes the value if necessary.
-     * @param {any} value The current value to format and process.
-     * @return {any} The current value formatted and processed.
+     * Formats the value if necessary.
+     * @param {any} value The current value to format.
+     * @return {any} The current value formatted.
      */
-    function formatAndProcessValue(value : any) {
-        formatters.forEach((formatter) => {
-            value = format(formatter, value, props.type);
-        });
+    function formatValue(value : any) {
+        return formatters.reduce(
+            (currentValue, formatter) => format(formatter, currentValue, props.type),
+            value,
+        );
+    }
 
+    /**
+     * Processes the value if necessary.
+     * @param {any} value The current value to process.
+     * @return {any} The current value processed.
+     */
+    function processValue(value : any) {
         if (processor) {
-            value = process(processor, value, props.type);
+            return process(processor, value, props.type);
         }
 
         return value;
     }
 
-    const value = useMemo(() : any => formatAndProcessValue(props.value), [props.value]);
+    const processedValue = useMemo(
+        () : any => processValue(formatValue(props.value)),
+        [props.value],
+    );
 
     /**
      * The event that is called when the input value changes.
@@ -250,7 +261,10 @@ export default function InputComponentWrapper(props : InputComponentWrapperProps
      * @param {boolean} initialCall Whether this is the initial change call.
      */
     const onChange = useCallback((value : any, initialCall : boolean = false) : void => {
-        props.onChange(formatAndProcessValue(value), initialCall);
+        value = formatValue(value);
+        const processedValue = processValue(value);
+
+        props.onChange(value, processedValue, initialCall);
     }, []);
 
     /**
@@ -275,7 +289,7 @@ export default function InputComponentWrapper(props : InputComponentWrapperProps
 
     if (validators.length) {
         return <InputValidationWrapper
-            value={value}
+            value={processedValue}
             dirty={props.dirty}
             type={componentProps.type}
             validators={validators}
