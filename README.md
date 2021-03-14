@@ -307,8 +307,8 @@ It also comes with a default add button to add new entries, and a remove button 
 | entries | The initial amount of entries to display | number | 3 | 0 |
 | minEntries | The minimum amount of entries to display | number | 1 | 0 |
 | maxEntries | The maximum amount of entries to display | number | 5 | 0 |
-| addComponent | The component used for the *button* that is responsible for inserting a new entry | JSX | <code><button\>Add new!<\/button\></code\> | The default add component |
-| removeComponent | The component used for the *button* that is responsible for removing an entry | JSX | <code><button\>Remove this!<\/button\></code\> | The default remove component |
+| addComponent | The component used for the *button* that is responsible for inserting a new entry | JSX | <code><button\>Add new!<\/button\></code> | The default add component |
+| removeComponent | The component used for the *button* that is responsible for removing an entry | JSX | <code><button\>Remove this!<\/button\></code> | The default remove component |
 ---
 ## 3.5. SubmitButton
 The **<SubmitButton\/>** is used as the button that fires the *onSubmit* event of the [**<Form\/>**](#31-form).
