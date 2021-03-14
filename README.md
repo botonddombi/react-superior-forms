@@ -4,7 +4,7 @@
 npm install react-superior-forms
 ```
 #### Features include:
-* [Customizable Input](#3-2-input)
+* [Customizable Input](#32-input)
 * Basic Inputs (Text, Email, Number, Password)
 * [Grouping](#lets-put-the-fields-into-groups)
 * [Repeaters](#lets-repeat-these-fields)
@@ -101,7 +101,7 @@ This flow will help us re-use validations for multiple scenarios, such as arrays
 # 3. Components
 ## 3.1. Form
 The **<Form\/>** component, just like the native **<form\/>** element, is responsible for collecting all input data of its childrens and handling the submit event.\
-The **<Form\/>** component only recognizes the **<Input\/>** components as *inputs*, and will ignore all other native elements such as **<input\/>, <select\/>, <textarea\/>, etc.**\
+The **<Form\/>** component only recognizes the [**<Input\/>**](#32-input) components as *inputs*, and will ignore all other native elements such as **<input\/>, <select\/>, <textarea\/>, etc.**\
 \
 The submit data is available in both *JSON* and *FormData*.
 ### Example usage:
@@ -142,10 +142,10 @@ any invalid input (recursively)
 | onFail | The function to call when the submit results in failure (Status is not 200) | function | (event, data) => console.log(event, data) | null | 
 | onSend | The function to call before sending the XHR | function | (data) => console.log(data) | null |
 | onSubmit | The function to call when trying to submit | function | () => console.log('Trying to submit!') | null |
-| inputDefaults | The default props the **<Input\/>** components will inherit. | object | {validate : true, hideValidateMessage: true, required: true, disabled: true, process: true, format: true}<br/>Check out the **<Input/\>** props here. | null |
+| inputDefaults | The default props the **<Input\/>** components will inherit. | object | <code>{validate : true, hideValidateMessage: true, required: true, disabled: true, process: true, format: true}</code><br/>Check out the **<Input/\>** props here. | null |
 
-# 3.2. Input
-The **<Input\/>** component is recognized as an input of the **<Form\/>** component and will be included in the submitted data if the **disabled** property is not set to *false*.\
+## 3.2. Input
+The **<Input\/>** component is recognized as an input of the [**<Form\/>**](#31-form) component and will be included in the submitted data if the **disabled** property is not set to *false*.\
 This component should only be used when creating a custom input of your own choice. A handful of inputs were already created to help you skip this process. Check out the **basic inputs**.\
 \
 To create a custom input, pass your custom input component as the *component* property.\
