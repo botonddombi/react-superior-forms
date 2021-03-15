@@ -96,7 +96,7 @@ For example, let's say we have a number field with all steps enabled:
 
 Now the validation can easily proceed with statement: **58 <= 10**\
 Had we skipped the processing, the value would have remained a string, causing the validation to check whether the length of string **"58"** is less or equal to 10 using statement: **"58".length <= 10**\
-This flow will help us re-use validations for multiple scenarios, such as arrays, strings, numbers and more!
+This flow will help us write reuseable validations for multiple scenarios, such as arrays, strings, numbers and more!
 
 # 3. Components
 ## 3.1. Form
