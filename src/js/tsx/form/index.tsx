@@ -242,20 +242,6 @@ export default function Form(props : FormProps) : JSX.Element {
                 InputGroupRepeaterFailedValidators,
             inputComponent: Inputs.Input|InputGroup|InputGroupRepeater,
         ) => {
-        // console.log(inputComponent, inputComponents.current[0], inputComponents.current[0] == inputComponent);
-        console.log(failedValidators);
-        // console.log(inputComponents.current
-        //     .reduce(
-        //         (previous, current) => [
-        //             ...(
-        //                 current === inputComponent ?
-        //                     failedValidators :
-        //                     current.failedValidators
-        //             ),
-        //             ...previous,
-        //         ],
-        //         [],
-        //     ));
 
         setFailedValidators(
             inputComponents.current
