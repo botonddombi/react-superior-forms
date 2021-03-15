@@ -102,26 +102,36 @@ export default function Form(props : FormProps) : JSX.Element {
      * Collects the components form data.
      * @param {object} data The data to collect the values into.
      * @param {Array<any>} components The components to traverse.
+     * @returns {object|Array<object>}
      */
-    function collectData(data: object, components: Array<any>) {
-        components.forEach((component) => {
+     function collectData(components: Array<any>, isObject: boolean) : object|Array<object> {
+        const data = isObject ? {} : [];
+
+        components.forEach((component, index) => {
             switch (component.constructor) {
-            case InputGroup:
-                data[component.props.name] = {};
-                collectData(data[component.props.name], component.inputComponents.current);
+            case InputGroup: {
+                const object = collectData(component.inputComponents.current, true);
+                if(Object.keys(object).length !== 0){
+                    data[isObject ? component.props.name : index] = object;
+                }
                 break;
-            case InputGroupRepeater:
-                data[component.props.name] = [];
-                component.inputGroups.current.forEach((inputGroup, index) => {
-                    data[component.props.name][index] = {};
-                    collectData(data[component.props.name][index], inputGroup.inputComponents.current);
-                });
+            }
+            case InputGroupRepeater: {
+                const array = collectData(component.inputGroups.current, false) as Array<object>;
+                if(array.length !== 0){
+                    data[component.props.name] = array;
+                }
                 break;
+            }
             default:
-                data[component.props.name] = component.processedValue;
+                if(component.props.disabled !== true){
+                    data[component.props.name] = component.processedValue;
+                }
                 break;
             }
         });
+
+        return data;
     }
 
     /**
@@ -129,11 +139,7 @@ export default function Form(props : FormProps) : JSX.Element {
      * @return {object} The form data packed into an object.
      */
     function collectFormData() {
-        const data = {};
-
-        collectData(data, inputComponents.current);
-
-        return data;
+        return collectData(inputComponents.current, true);
     }
 
     /**
