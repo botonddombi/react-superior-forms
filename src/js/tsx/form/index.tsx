@@ -1,4 +1,3 @@
-/* eslint-disable */
 import React, {useRef, useState, useCallback, useMemo} from 'react';
 import classNames from 'classnames';
 
@@ -13,7 +12,9 @@ import * as Inputs from './layout/input-types';
 import {InputFailedValidators} from './layout/input';
 
 import InputGroup, {InputGroupFailedValidators} from '../form-builder/layout/input-group';
-import InputGroupRepeater, {InputGroupRepeaterFailedValidators} from '../form-builder/layout/input-group-repeater';
+
+import InputGroupRepeater, {InputGroupRepeaterFailedValidators}
+    from '../form-builder/layout/input-group-repeater';
 
 import {FormContext} from './context';
 import {SubmitPhase} from 'constants/enums';
@@ -100,31 +101,31 @@ export default function Form(props : FormProps) : JSX.Element {
 
     /**
      * Collects the components form data.
-     * @param {object} data The data to collect the values into.
      * @param {Array<any>} components The components to traverse.
-     * @returns {object|Array<object>}
+     * @param {boolean} isObject The data to collect the values into.
+     * @return {object|Array<object>}
      */
-     function collectData(components: Array<any>, isObject: boolean) : object|Array<object> {
+    function collectData(components: Array<any>, isObject: boolean) : object|Array<object> {
         const data = isObject ? {} : [];
 
         components.forEach((component, index) => {
             switch (component.constructor) {
             case InputGroup: {
                 const object = collectData(component.inputComponents.current, true);
-                if(Object.keys(object).length !== 0){
+                if (Object.keys(object).length !== 0) {
                     data[isObject ? component.props.name : index] = object;
                 }
                 break;
             }
             case InputGroupRepeater: {
                 const array = collectData(component.inputGroups.current, false) as Array<object>;
-                if(array.length !== 0){
+                if (array.length !== 0) {
                     data[component.props.name] = array;
                 }
                 break;
             }
             default:
-                if(component.props.disabled !== true){
+                if (component.props.disabled !== true) {
                     data[component.props.name] = component.processedValue;
                 }
                 break;
@@ -248,22 +249,21 @@ export default function Form(props : FormProps) : JSX.Element {
                 InputGroupRepeaterFailedValidators,
             inputComponent: Inputs.Input|InputGroup|InputGroupRepeater,
         ) => {
-
-        setFailedValidators(
-            inputComponents.current
-                .reduce(
-                    (previous, current) => [
-                        ...(
-                            current === inputComponent ?
-                                failedValidators :
-                                current.failedValidators
-                        ),
-                        ...previous,
-                    ],
-                    [],
-                ),
-        );
-    }, []);
+            setFailedValidators(
+                inputComponents.current
+                    .reduce(
+                        (previous, current) => [
+                            ...(
+                                current === inputComponent ?
+                                    failedValidators :
+                                    current.failedValidators
+                            ),
+                            ...previous,
+                        ],
+                        [],
+                    ),
+            );
+        }, []);
 
     const children = useMemo(() => mapRefs(
         props.children,
