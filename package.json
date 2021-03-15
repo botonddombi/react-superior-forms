@@ -13,8 +13,10 @@
     "builder",
     "ajax"
   ],
-  "repository": "https://github.com/Silexstudio/react-superior-forms.git",
-  "author": "Dombi Botond <silexworks@gmail.com>",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/dombibotond/react-superior-forms.git"
+  },
   "license": "MIT",
   "scripts": {
     "watch": "cross-env NODE_ENV=development webpack --watch",

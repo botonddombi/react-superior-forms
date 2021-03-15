@@ -153,15 +153,16 @@ This *component* will inherit a handful of properties passed to the **<Input\>**
 
 ### Example usage:
 ```JSX
-import Form, {Input} from 'react-superior-forms';
+import Form, {Input, SubmitButton} from 'react-superior-forms';
 
-function YourCustomInputComponent(props){
-    return <input type="text" disabled={props.disabled} onChange={props.onChange}/>
+function YourCustomInputComponent(props) {
+    return <input type="text" disabled={props.disabled} onChange={(ev) => props.onChange(ev.target.value)} value={props.value ?? ''}/>;
 }
 
-<Form>
+<Form route="/example">
     <Input name="custom_stuff" component={<YourCustomInputComponent/>} disabled={Math.random() >= 0.5}/>
-</Form>
+    <SubmitButton/>
+</Form>;
 ```
 ### Example output:
 ```HTML
@@ -190,7 +191,7 @@ or if "validate" property is used, and the input is currently invalid
 | process | The processing to use on the input value. When set to **true**, the processing will be based on the **type** property. | boolean \| function | false = No processing<br/>true = The processing is recognized based on the **type** property.<br/><br/><code>(value) => parseFloat(value)</code> | false |
 | required | Whether the field is required | boolean | false \| true | false |
 | disabled | Whether the field is disabled. When set to **true** the input key will not be present in the submitted data | boolean | false \| true | false |
-| onChange | The function to call when the change event occurs | function | <code>(value) => console.log(`Value changed to ${value}`)</code> | null |
+| onChange | The function to call when the change event occurs | function | <code>(value) => console.log(\`Value changed to ${value}\`)</code> | null |
 | onValidate | The function to call when the validation event occurs | function | <code>(failedValidators) => console.log(failedValidators)</code> | null |
 ### Basic Inputs
 These inputs were created to supply what the native **<input\>** elements have to offer.\
@@ -406,4 +407,12 @@ import {FormBuilder, InputTypes} from 'react-superior-forms';
 ```
 Parameter documentation coming soon.
 
-### **This repository is currently in the making. The package is not yet published.**
+---
+
+Dependencies:
+* [classnames](https://www.npmjs.com/package/classnames)
+* [react](https://www.npmjs.com/package/react)
+* [react-dom](https://www.npmjs.com/package/react-dom)
+
+Other Links:
+* [NPM package](https://www.npmjs.com/package/react-superior-forms)
