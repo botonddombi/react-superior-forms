@@ -1,6 +1,6 @@
 /* eslint-disable require-jsdoc, no-unused-vars, max-len */
 
-import React from 'react';
+import React, {useEffect, useImperativeHandle, useRef} from 'react';
 import ReactDOM from 'react-dom';
 
 import './global.scss';
@@ -81,14 +81,14 @@ import Form, {FormBuilder, InputTypes, InputGroup, InputGroupRepeater, NumberInp
 //     <SubmitStatus/>
 // </Form>;
 
-function YourCustomInputComponent(props: any) {
-    return <input type="text" disabled={props.disabled} onChange={(ev) => props.onChange(ev.target.value)} value={props.value ?? ''}/>;
-}
+// function YourCustomInputComponent(props: any) {
+//     return <input type="text" disabled={props.disabled} onChange={(ev) => props.onChange(ev.target.value)} value={props.value ?? ''}/>;
+// }
 
-const form = <Form route="/example">
-    <Input name="custom_stuff" component={<YourCustomInputComponent/>} disabled={Math.random() >= 0.5}/>
-    <SubmitButton/>
-</Form>;
+// const form = <Form route="/example">
+//     <Input name="custom_stuff" component={<YourCustomInputComponent/>} disabled={Math.random() >= 0.5}/>
+//     <SubmitButton/>
+// </Form>;
 
 // const form = <Form
 //     route="/test"
@@ -204,4 +204,29 @@ const form = <Form route="/example">
 //     ]}
 // />;
 
-ReactDOM.render(form, document.body.appendChild(document.createElement('div')));
+// ReactDOM.render(form, document.body.appendChild(document.createElement('div')));
+
+const Test : any = React.forwardRef((props: any, ref: any) => {
+    // useImperativeHandle(ref, () => ({
+    //     value: 3,
+    // }));
+
+    return <div></div>;
+});
+
+Test.displayName = 'Test';
+
+function Parent(props: any) {
+    const ref = useRef();
+
+    useEffect(() => {
+        setInterval(() => {
+            console.log(ref);
+        }, 1000);
+    }, []);
+
+    return <Test ref={ref}/>;
+}
+
+
+ReactDOM.render(<Parent/>, document.body.appendChild(document.createElement('div')));

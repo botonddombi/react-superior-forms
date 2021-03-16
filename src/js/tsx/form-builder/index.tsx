@@ -84,6 +84,7 @@ export default function FormBuilder(props : FormBuilderProps) : JSX.Element {
 
                     return <InputWrapper
                         key={inputIndex}
+                        name={inputProps.name}
                         label={label}
                         before={before}
                         after={after}

@@ -27,7 +27,8 @@ module.exports = {
             {
                 'code': 100,
                 'comments': 120,
-                'ignoreRegExpLiterals': true
+                'ignoreRegExpLiterals': true,
+                'ignoreTemplateLiterals': true
             }
         ]
 	},

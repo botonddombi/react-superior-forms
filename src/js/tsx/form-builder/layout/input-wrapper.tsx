@@ -3,6 +3,7 @@ import React, {useRef, useState, useCallback, useMemo} from 'react';
 import classNames from 'classnames';
 
 import {mapRefs} from 'modules/helpers';
+import {capitalize} from 'modules/text-transform';
 
 import styles from 'styles/form/layout/input-wrapper.scss';
 
@@ -11,7 +12,8 @@ import * as Inputs from '../../form/layout/input-types';
 const inputTypes = Object.values(Inputs);
 
 export type InputWrapperType = {
-    label?: string | JSX.Element,
+    name?: string,
+    label?: boolean | string | JSX.Element,
 
     wrapperClassName?: string,
 
@@ -73,7 +75,17 @@ export default function InputWrapper(props : InputWrapperProps) : JSX.Element {
                 )
             }
         >
-            {props.label ? <label>{props.label}</label> : ''}
+            {
+                (props.label !== false) ?
+                    <label>
+                        {
+                            (props.label === undefined) ?
+                                capitalize(props.name) :
+                                props.label
+                        }
+                    </label> :
+                    ''
+            }
             {props.beforeInput ?? ''}
             {children}
             {props.afterInput ?? ''}

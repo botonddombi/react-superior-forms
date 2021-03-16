@@ -24,7 +24,7 @@ export type InputGroupRepeaterOptions = {
 };
 
 type InputGroupRepeaterProps = InputGroupRepeaterOptions & {
-    name?: string,
+    name: string,
 
     onValidate?: (
         failedValidators: InputGroupRepeaterFailedValidators,

@@ -106,14 +106,22 @@ export default function Form(props : FormProps) : JSX.Element {
      * @return {object|Array<object>}
      */
     function collectData(components: Array<any>, isObject: boolean) : object|Array<object> {
-        const data = isObject ? {} : [];
+        let data = isObject ? {} : [];
 
         components.forEach((component, index) => {
             switch (component.constructor) {
             case InputGroup: {
                 const object = collectData(component.inputComponents.current, true);
                 if (Object.keys(object).length !== 0) {
-                    data[isObject ? component.props.name : index] = object;
+                    if (isObject) {
+                        if (component.props.name === undefined) {
+                            data = {...data, ...object};
+                        } else {
+                            data[component.props.name] = object;
+                        }
+                    } else {
+                        data[index] = object;
+                    }
                 }
                 break;
             }

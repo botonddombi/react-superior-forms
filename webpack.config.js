@@ -153,6 +153,9 @@ module.exports = {
 		errorDetails: true,
 		errorStack: true,
 	},
+    performance: {
+        hints: false
+    },
     optimization: {
         removeAvailableModules: false,
         removeEmptyChunks: false,

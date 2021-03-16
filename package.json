@@ -2,7 +2,7 @@
   "name": "react-superior-forms",
   "version": "1.0.0",
   "description": "A simple yet convenient way to build forms in react.",
-  "main": "lib/js/main.min.js",
+  "main": "lib/js/main.js",
   "types": "lib/js/main.d.ts",
   "files": [
     "lib"
@@ -55,6 +55,8 @@
     "postcss": "^8.2.6",
     "postcss-loader": "^5.0.0",
     "postcss-preset-env": "^6.7.0",
+    "react": "^17.0.1",
+    "react-dom": "^17.0.1",
     "sass-loader": "^11.0.1",
     "style-loader": "^2.0.0",
     "stylelint": "^13.10.0",
@@ -70,8 +72,9 @@
     "webpack-dev-server": "^3.11.2"
   },
   "dependencies": {
-    "classnames": "^2.2.6",
-    "react": "^17.0.1",
-    "react-dom": "^17.0.1"
+    "classnames": "^2.2.6"
+  },
+  "peerDependencies": {
+    "react": "^17.0.1"
   }
 }
