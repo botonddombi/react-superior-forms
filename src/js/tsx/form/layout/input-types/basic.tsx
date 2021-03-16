@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useImperativeHandle, useRef, useCallback} from 'react';
 import classNames from 'classnames';
 
 import styles from 'styles/form/layout/inputs/input.scss';
@@ -25,74 +25,63 @@ type BasicInputComponentProps = InputComponentProps & {
 
 /**
  * The input tag for the basic input.
+ * @param {BasicInputComponentProps} props
+ * @param {React.RefObject<InputComponent>} ref
+ * @returns {JSX.Element}
  */
-class BasicInputComponent
-    extends React.Component<BasicInputComponentProps>
-    implements InputComponent {
-    private input : React.RefObject<HTMLInputElement>;
+const BasicInputComponent = React.forwardRef((
+    props: BasicInputComponentProps,
+    ref: React.RefObject<InputComponent>,
+) : JSX.Element => {
+    const input : React.RefObject<HTMLInputElement> = useRef();
 
-    /**
-     * @param {BasicInputComponentProps} props
-     */
-    constructor(props : BasicInputComponentProps) {
-        super(props);
-
-        this.input = React.createRef();
-
-        this.onChange = this.onChange.bind(this);
-        this.focus = this.focus.bind(this);
-    }
-
-    /**
-     * Focuses the input element.
-     */
-    focus() {
-        this.input.current.focus();
-    }
+    useImperativeHandle(ref, () : InputComponent => ({
+        ref: input,
+        /**
+         * Focuses the input element.
+         */
+        focus: () => {
+            input.current.focus();
+        },
+    }));
 
     /**
      * Calls the parent onChange event to update the current value of the input.
      * @param {React.ChangeEvent<HTMLInputElement>} event The original 'change' event.
      */
-    onChange(event : React.ChangeEvent<HTMLInputElement>) {
-        this.props.onChange(event.target.value);
-    }
+    const onChange = useCallback((event : React.ChangeEvent<HTMLInputElement>) => {
+        props.onChange(event.target.value);
+    }, []);
 
-    /**
-     * Renders the input element and applies a ref to it.
-     * @return {React.ReactNode}
-     */
-    render() : React.ReactNode {
-        const props = this.props;
+    return <input
+        className={
+            classNames(
+                styles.input,
+                `${styles.input}-type-${props.type}`,
+                {
+                    [`${styles.input}--invalid`]:
+                    props.validationMessage,
+                },
+                props.className,
+            )
+        }
 
-        return <input
-            className={
-                classNames(
-                    styles.input,
-                    `${styles.input}-type-${props.type}`,
-                    {
-                        [`${styles.input}--invalid`]:
-                        props.validationMessage,
-                    },
-                    props.className,
-                )
-            }
+        name={props.name}
 
-            name={props.name}
+        value={props.value ?? ''}
 
-            value={props.value ?? ''}
+        type={props.defaultType}
 
-            type={props.defaultType}
+        required={props.required}
+        disabled={props.disabled}
 
-            required={props.required}
-            disabled={props.disabled}
+        onChange={onChange}
 
-            onChange={this.onChange}
+        ref={input}
+    />;
+});
 
-            ref={this.input}
-        />;
-    }
-}
+BasicInputComponent.displayName = 'BasicInputComponent';
 
 /**
  * A basic input to extend.

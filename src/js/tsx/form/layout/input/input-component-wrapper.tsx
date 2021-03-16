@@ -20,6 +20,7 @@ import {format} from 'modules/input-formatter';
 import {process} from 'modules/input-processor';
 
 export interface InputComponent {
+    ref?: React.RefObject<any>,
     focus: () => void,
 }
 
