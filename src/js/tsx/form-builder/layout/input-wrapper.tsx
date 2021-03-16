@@ -61,7 +61,7 @@ export default function InputWrapper(props : InputWrapperProps) : JSX.Element {
             onValidate,
         },
     ), [
-        props.children
+        props.children,
     ]);
 
     return <React.Fragment>

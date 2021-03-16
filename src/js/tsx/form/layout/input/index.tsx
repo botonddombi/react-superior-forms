@@ -111,7 +111,7 @@ function Input(
         setDirty(dirty || !initialCall);
     }, [
         props.onChange,
-        dirty
+        dirty,
     ]);
 
     /**
@@ -125,7 +125,7 @@ function Input(
             props.onValidate(newFailedValidators, component);
         }
     }, [
-        props.onValidate
+        props.onValidate,
     ]);
 
     return <InputComponentWrapper

@@ -155,9 +155,9 @@ This *component* will inherit a handful of properties passed to the **<Input\>**
 ```JSX
 import Form, {Input, SubmitButton} from 'react-superior-forms';
 
-function YourCustomInputComponent(props) {
-    return <input type="text" disabled={props.disabled} onChange={(ev) => props.onChange(ev.target.value)} value={props.value ?? ''}/>;
-}
+const YourCustomInputComponent = React.forwardRef((props:any, ref:any) => {
+    return <input type="text" disabled={props.disabled} onChange={(ev) => props.onChange(ev.target.value)} value={props.value ?? ''} ref={ref}/>;
+});
 
 <Form route="/example">
     <Input name="custom_stuff" component={<YourCustomInputComponent/>} disabled={Math.random() >= 0.5}/>

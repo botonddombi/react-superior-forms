@@ -10,7 +10,7 @@ import {
     CustomInputFormatter,
 } from 'typings/form';
 
-import input, {InputProps} from '.';
+import {InputProps} from './index';
 
 import {FormContext} from '../../context';
 

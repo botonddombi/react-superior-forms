@@ -1,4 +1,4 @@
-/* eslint-disable require-jsdoc, no-unused-vars, max-len */
+/* eslint-disable */
 
 import React, {useCallback, useEffect, useImperativeHandle, useRef, useState} from 'react';
 import ReactDOM from 'react-dom';
@@ -204,4 +204,13 @@ import Form, {FormBuilder, InputTypes, InputGroup, InputGroupRepeater, NumberInp
 //     ]}
 // />;
 
-// ReactDOM.render(form, document.body.appendChild(document.createElement('div')));
+const YourCustomInputComponent = React.forwardRef((props:any, ref:any) => {
+    return <input type="text" disabled={props.disabled} onChange={(ev) => props.onChange(ev.target.value)} value={props.value ?? ''} ref={ref}/>;
+});
+
+const form = <Form route="/example">
+    <Input name="custom_stuff" component={<YourCustomInputComponent/>} disabled={Math.random() >= 0.5}/>
+    <SubmitButton/>
+</Form>;
+
+ReactDOM.render(form, document.body.appendChild(document.createElement('div')));

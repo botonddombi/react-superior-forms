@@ -127,7 +127,7 @@ function InputGroup(props: InputGroupProps, ref: React.RefObject<InputGroupHandl
             props.onValidate(newFailedValidators, fieldset);
         }
     }, [
-        props.onValidate
+        props.onValidate,
     ]);
 
     return <React.Fragment>
