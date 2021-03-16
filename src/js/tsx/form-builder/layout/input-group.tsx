@@ -1,8 +1,8 @@
-import React from 'react';
+import React, {useRef, useState, useCallback, useImperativeHandle} from 'react';
 
 import classNames from 'classnames';
 
-import type {InputFailedValidators} from '../../form/layout/input';
+import type {InputFailedValidators, InputHandle} from '../../form/layout/input';
 import type {InputGroupRepeaterOptions} from './input-group-repeater';
 import type {InputOptions, CustomInputOptions} from '../index';
 
@@ -17,7 +17,8 @@ import {
 
 import * as Inputs from '../../form/layout/input-types';
 
-import InputGroupRepeater, {InputGroupRepeaterFailedValidators} from './input-group-repeater';
+import InputGroupRepeater, {InputGroupRepeaterFailedValidators, InputGroupRepeaterHandle}
+    from './input-group-repeater';
 
 const inputTypes = Object.values(Inputs);
 
@@ -47,7 +48,7 @@ export type InputGroupProps = InputGroupOptions & {
     children?: React.ReactNode|JSX.Element|JSX.Element[],
     onValidate?: (
         failedValidators : InputGroupFailedValidators,
-        inputComponent: Inputs.Input|InputGroup|InputGroupRepeater
+        inputComponent: React.RefObject<any>
     ) => void,
 };
 
@@ -57,40 +58,39 @@ export type InputGroupFailedValidators = Array<
     Array<Array<InputValidator|CustomInputValidator>>
 >;
 
-type InputGroupState = {
-    failedValidators : InputGroupFailedValidators
-};
+export interface InputGroupHandle {
+    ref: React.RefObject<any>,
+    inputComponents : React.RefObject<Array<InputComponent>>,
+
+    failedValidators: InputGroupFailedValidators
+
+    name: string,
+}
+
+const baseClassName = 'input-group';
+const inputComponentTypes = [...inputTypes, InputGroup, InputGroupRepeater];
+
+type InputComponent = InputHandle|InputGroupHandle|InputGroupRepeaterHandle;
 
 /**
  * A group that wraps one or multiple inputs.
+ * @param {InputGroupProps} props
+ * @param {React.RefObject<any>} ref
+ * @return {JSX.Element}
  */
-export default
-class InputGroup extends React.Component<InputGroupProps, InputGroupState> {
-    private static baseClassName = 'input-group';
-    private static inputComponentTypes = [...inputTypes, InputGroup, InputGroupRepeater];
-    public inputComponents : React.RefObject<Array<Inputs.Input|InputGroup|InputGroupRepeater>>;
+function InputGroup(props: InputGroupProps, ref: React.RefObject<any>) : JSX.Element {
+    const fieldset : React.RefObject<HTMLFieldSetElement> = useRef();
+    const inputComponents : React.RefObject<Array<InputComponent>> = useRef();
+    const [failedValidators, setFailedValidators] = useState<InputGroupFailedValidators>([]);
 
-    /**
-     * @param {InputGroupProps} props
-     */
-    constructor(props: InputGroupProps) {
-        super(props);
+    useImperativeHandle(ref, () : InputGroupHandle => ({
+        ref: fieldset,
+        inputComponents,
 
-        this.inputComponents = React.createRef();
+        failedValidators,
 
-        this.state = {
-            failedValidators: [],
-        };
-
-        this.onValidate = this.onValidate.bind(this);
-    }
-
-    /**
-     * Gets the current failed validators of all inputs placed in this group.
-     */
-    get failedValidators() : InputGroupFailedValidators {
-        return this.state.failedValidators;
-    }
+        name: props.name,
+    }));
 
     /**
      * Captures the validation of all inputs placed in this group.
@@ -102,18 +102,18 @@ class InputGroup extends React.Component<InputGroupProps, InputGroupState> {
      * } currentfailedValidators The failed validators.
      * @param {Inputs.Input|InputGroup|InputGroupRepeater} inputComponent The component that was validated.
      */
-    onValidate(
+    const onValidate = useCallback((
         currentfailedValidators:
             InputFailedValidators |
             InputGroupFailedValidators |
             InputGroupRepeaterFailedValidators,
-        inputComponent: Inputs.Input|InputGroup|InputGroupRepeater,
-    ) {
-        const failedValidators = this.inputComponents.current
+        inputComponent: React.RefObject<any>,
+    ) => {
+        const newFailedValidators = inputComponents.current
             .reduce(
                 (previous, current) => [
                     ...(
-                        current === inputComponent ?
+                        current.ref.current === inputComponent.current ?
                             currentfailedValidators :
                             current.failedValidators
                     ),
@@ -122,65 +122,59 @@ class InputGroup extends React.Component<InputGroupProps, InputGroupState> {
                 [],
             );
 
-        this.setState({
-            failedValidators,
-        });
+        setFailedValidators(newFailedValidators);
 
-        if (typeof this.props.onValidate === 'function') {
-            this.props.onValidate(failedValidators, this);
+        if (typeof props.onValidate === 'function') {
+            props.onValidate(newFailedValidators, fieldset);
         }
-    }
+    }, []);
 
-    /**
-     * Wraps one or multiple inputs.
-     * @return {React.ReactNode}
-     */
-    render() : React.ReactNode {
-        const props = this.props;
+    return <React.Fragment>
+        {props.before ?? ''}
+        <fieldset
+            className={
+                classNames(
+                    styles[baseClassName],
+                    {
+                        [`${styles[baseClassName]}--invalid`]:
+                        failedValidators.length,
+                        [`${baseClassName}-name-${String(props.name).replace(' ', '')}`]:
+                        props.name,
+                    },
+                    props.className,
+                )
+            }
 
-        return <React.Fragment>
-            {props.before ?? ''}
-            <fieldset
-                className={
-                    classNames(
-                        styles[InputGroup.baseClassName],
-                        {
-                            [`${styles[InputGroup.baseClassName]}--invalid`]:
-                            this.state.failedValidators.length,
-                            [`${InputGroup.baseClassName}-name-${String(props.name).replace(' ', '')}`]:
-                            props.name,
-                        },
-                        props.className,
-                    )
-                }
-            >
-                {props.legend ? <legend>{props.legend}</legend> : ''}
-                {props.beforeInputs ?? ''}
-                {
-                    mapRefs(
-                        props.children,
-                        InputGroup.inputComponentTypes,
-                        this.inputComponents,
-                        {
-                            onValidate: this.onValidate,
-                        },
-                        {
-                            defaultValue: (child) =>
-                                child.props.defaultValue ??
-                                (
-                                    (typeof props.defaultValue !== 'undefined') ?
-                                        (
-                                            props.defaultValue[child.props.name] ??
-                                            undefined
-                                        ) :
+            ref={fieldset}
+        >
+            {props.legend ? <legend>{props.legend}</legend> : ''}
+            {props.beforeInputs ?? ''}
+            {
+                mapRefs(
+                    props.children,
+                    inputComponentTypes,
+                    inputComponents,
+                    {
+                        onValidate,
+                    },
+                    {
+                        defaultValue: (child) =>
+                            child.props.defaultValue ??
+                            (
+                                (typeof props.defaultValue !== 'undefined') ?
+                                    (
+                                        props.defaultValue[child.props.name] ??
                                         undefined
-                                ),
-                        },
-                    )
-                }
-                {props.afterInputs ?? ''}
-            </fieldset>
-            {props.after ?? ''}
-        </React.Fragment>;
-    }
+                                    ) :
+                                    undefined
+                            ),
+                    },
+                )
+            }
+            {props.afterInputs ?? ''}
+        </fieldset>
+        {props.after ?? ''}
+    </React.Fragment>;
 }
+
+export default React.forwardRef(InputGroup);

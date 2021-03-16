@@ -69,7 +69,20 @@ function mapRefsRecursive(
 
                 return React.cloneElement(child, {
                     ref: (node) => {
-                        if (node && targetRef.current.indexOf(node) === -1) {
+                        if (
+                            node &&
+                            (
+                                (
+                                    node.ref &&
+                                    targetRef.current.reduce(
+                                        (previous, current) =>
+                                            previous && (!current.ref || current.ref != node.ref),
+                                        true,
+                                    )
+                                ) ||
+                                (!node.ref && targetRef.current.indexOf(node) === -1)
+                            )
+                        ) {
                             targetRef.current.push(node);
 
                             const {ref} = child;

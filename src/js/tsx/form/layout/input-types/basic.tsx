@@ -7,7 +7,7 @@ import type {InputComponentProps} from '../input/input-component-wrapper';
 
 import type {InputType} from '../input';
 
-import Input from '../input';
+import Input, {InputHandle} from '../input';
 import {InputTypes} from 'constants/enums';
 import {InputComponent} from '../input/input-component-wrapper';
 
@@ -97,13 +97,14 @@ class BasicInputComponent
 /**
  * A basic input to extend.
  */
-const BasicInput = React.forwardRef((props : BasicInputProps, ref : React.RefObject<Input>) => {
-    const {defaultType, ...inputProps} = props;
+const BasicInput = React.forwardRef(
+    (props : BasicInputProps, ref : React.RefObject<InputHandle>) => {
+        const {defaultType, ...inputProps} = props;
 
-    const component = <BasicInputComponent defaultType={defaultType} {...inputProps}/>;
+        const component = <BasicInputComponent defaultType={defaultType} {...inputProps}/>;
 
-    return <Input component={component} ref={ref} {...inputProps}/>;
-});
+        return <Input component={component} ref={ref} {...inputProps}/>;
+    });
 
 BasicInput.displayName = 'BasicInput';
 
@@ -113,7 +114,7 @@ BasicInput.displayName = 'BasicInput';
  * @return {JSX.Element}
  */
 export const NumberInput = React.forwardRef(
-    (props : InputWrapperProps, ref : React.RefObject<Input>) => {
+    (props : InputWrapperProps, ref : React.RefObject<InputHandle>) => {
         return <BasicInput defaultType={'text'} ref={ref} type={InputTypes.Number} {...props}/>;
     },
 );
@@ -124,7 +125,7 @@ NumberInput.displayName = 'NumberInput';
  * A simple text input.
  */
 export const TextInput = React.forwardRef(
-    (props : InputWrapperProps, ref : React.RefObject<Input>) => {
+    (props : InputWrapperProps, ref : React.RefObject<InputHandle>) => {
         return <BasicInput defaultType={'text'} ref={ref} type={InputTypes.Text} {...props}/>;
     },
 );
@@ -137,7 +138,7 @@ TextInput.displayName = 'TextInput';
  * @return {JSX.Element}
  */
 export const EmailInput = React.forwardRef(
-    (props : InputWrapperProps, ref : React.RefObject<Input>) => {
+    (props : InputWrapperProps, ref : React.RefObject<InputHandle>) => {
         return <BasicInput defaultType={'text'} ref={ref} type={InputTypes.Email} {...props}/>;
     },
 );
@@ -150,7 +151,7 @@ EmailInput.displayName = 'EmailInput';
  * @return {JSX.Element}
  */
 export const PasswordInput = React.forwardRef(
-    (props : InputWrapperProps, ref : React.RefObject<Input>) => {
+    (props : InputWrapperProps, ref : React.RefObject<InputHandle>) => {
         return <BasicInput
             defaultType={'password'}
             ref={ref}

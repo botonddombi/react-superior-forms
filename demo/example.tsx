@@ -18,19 +18,19 @@ import Form, {FormBuilder, InputTypes, InputGroup, InputGroupRepeater, NumberInp
 //     <SubmitButton/>
 // </Form>;
 
-// const form =
-// <Form route="/create/user" json={true}>
-//     {/* <InputGroup name="user">
-//         <label>Username</label>
-//         <TextInput name="name" validate={'max:50'} format={true}/>
-//     </InputGroup> */}
-//     <InputGroup name="user_preferences">
-//         <label>Favourite Number</label>
-//         <NumberInput name="favourite_number" validate={true} process={true}/>
-//     </InputGroup>
+const form =
+<Form route="/create/user" json={true}>
+    {/* <InputGroup name="user">
+        <label>Username</label>
+        <TextInput name="name" validate={'max:50'} format={true}/>
+    </InputGroup> */}
+    <InputGroup name="user_preferences">
+        <label>Favourite Number</label>
+        <NumberInput name="favourite_number" validate={true} process={true}/>
+    </InputGroup>
 
-//     <SubmitButton/>
-// </Form>;
+    <SubmitButton/>
+</Form>;
 
 // const form =
 // <Form route="/create/users" json={true}>
@@ -204,29 +204,29 @@ import Form, {FormBuilder, InputTypes, InputGroup, InputGroupRepeater, NumberInp
 //     ]}
 // />;
 
-// ReactDOM.render(form, document.body.appendChild(document.createElement('div')));
+ReactDOM.render(form, document.body.appendChild(document.createElement('div')));
 
-const Test : any = React.forwardRef((props: any, ref: any) => {
-    // useImperativeHandle(ref, () => ({
-    //     value: 3,
-    // }));
+// const Test : any = React.forwardRef((props: any, ref: any) => {
+//     // useImperativeHandle(ref, () => ({
+//     //     value: 3,
+//     // }));
 
-    return <div></div>;
-});
+//     return <div></div>;
+// });
 
-Test.displayName = 'Test';
+// Test.displayName = 'Test';
 
-function Parent(props: any) {
-    const ref = useRef();
+// function Parent(props: any) {
+//     const ref = useRef();
 
-    useEffect(() => {
-        setInterval(() => {
-            console.log(ref);
-        }, 1000);
-    }, []);
+//     useEffect(() => {
+//         setInterval(() => {
+//             console.log(ref);
+//         }, 1000);
+//     }, []);
 
-    return <Test ref={ref}/>;
-}
+//     return <Test ref={ref}/>;
+// }
 
 
-ReactDOM.render(<Parent/>, document.body.appendChild(document.createElement('div')));
+// ReactDOM.render(<Parent/>, document.body.appendChild(document.createElement('div')));
