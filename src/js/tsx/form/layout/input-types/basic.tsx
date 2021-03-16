@@ -51,7 +51,7 @@ const BasicInputComponent = React.forwardRef((
      */
     const onChange = useCallback((event : React.ChangeEvent<HTMLInputElement>) => {
         props.onChange(event.target.value);
-    }, []);
+    }, [props.onChange]);
 
     return <input
         className={

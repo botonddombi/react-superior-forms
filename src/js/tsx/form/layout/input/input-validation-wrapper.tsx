@@ -57,12 +57,12 @@ export default function InputValidationWrapper(props : InputValidationWrapperPro
         props.onValidate(validators);
 
         setFailedValidators(validators);
-    }, [props.validators, props.value]);
+    }, [props.validators, props.value, props.onValidate]);
 
     /**
      * The first failed validator's message to display.
      */
-    const memoizedValidationMessage = useMemo(() : React.ReactNode | null => {
+    const validationMessage = useMemo(() : React.ReactNode | null => {
         if (
             failedValidators.length &&
             props.hideValidateMessage !== true &&
@@ -91,7 +91,7 @@ export default function InputValidationWrapper(props : InputValidationWrapperPro
                     styles['input-validation-wrapper'],
                     {
                         [`${styles['input-validation-wrapper']}--invalid`]:
-                        memoizedValidationMessage,
+                        validationMessage,
                     },
                 )
             }
@@ -100,10 +100,10 @@ export default function InputValidationWrapper(props : InputValidationWrapperPro
             {
                 React.cloneElement(props.children, {
                     failedValidators,
-                    validationMessage: memoizedValidationMessage,
+                    validationMessage,
                 })
             }
-            {memoizedValidationMessage}
+            {validationMessage}
         </div>
     );
 }

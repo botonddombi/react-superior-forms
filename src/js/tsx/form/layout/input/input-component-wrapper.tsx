@@ -10,7 +10,7 @@ import {
     CustomInputFormatter,
 } from 'typings/form';
 
-import {InputProps} from '.';
+import input, {InputProps} from '.';
 
 import {FormContext} from '../../context';
 
@@ -220,6 +220,7 @@ export default function InputComponentWrapper(props : InputComponentWrapperProps
         return formatters;
     }, [
         props.format,
+        inputDefaults.format,
         validators,
     ]);
 
@@ -266,7 +267,7 @@ export default function InputComponentWrapper(props : InputComponentWrapperProps
         const processedValue = processValue(value);
 
         props.onChange(value, processedValue, initialCall);
-    }, []);
+    }, [props.onChange]);
 
     /**
      * This is to format and process the default value of the input.

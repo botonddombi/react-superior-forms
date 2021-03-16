@@ -109,7 +109,10 @@ function Input(
         setValue(value);
         setProcessedValue(processedValue);
         setDirty(dirty || !initialCall);
-    }, []);
+    }, [
+        props.onChange,
+        dirty
+    ]);
 
     /**
      * The validation event that is called whenever the input component's value has been validated.
@@ -121,7 +124,9 @@ function Input(
         if (typeof props.onValidate === 'function') {
             props.onValidate(newFailedValidators, component);
         }
-    }, []);
+    }, [
+        props.onValidate
+    ]);
 
     return <InputComponentWrapper
         {...props}

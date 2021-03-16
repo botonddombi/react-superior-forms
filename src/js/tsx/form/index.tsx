@@ -256,7 +256,7 @@ export default function Form(props : FormProps) : JSX.Element {
         }
 
         sendXhr();
-    }, []);
+    }, [props]);
 
     /**
      * Captures the validation of all inputs placed in this form.
@@ -282,7 +282,7 @@ export default function Form(props : FormProps) : JSX.Element {
                     [],
                 ),
         );
-    }, []);
+    }, [inputComponents]);
 
     const children = useMemo(() => mapRefs(
         props.children,
@@ -291,7 +291,7 @@ export default function Form(props : FormProps) : JSX.Element {
         {
             onValidate,
         },
-    ), [props.children]);
+    ), [props.children, onValidate]);
 
     return (
         <FormContext.Provider
