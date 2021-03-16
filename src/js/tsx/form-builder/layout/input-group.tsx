@@ -109,8 +109,6 @@ class InputGroup extends React.Component<InputGroupProps, InputGroupState> {
             InputGroupRepeaterFailedValidators,
         inputComponent: Inputs.Input|InputGroup|InputGroupRepeater,
     ) {
-        console.log(this.inputComponents.current);
-
         const failedValidators = this.inputComponents.current
             .reduce(
                 (previous, current) => [
