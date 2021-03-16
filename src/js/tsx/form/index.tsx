@@ -6,6 +6,7 @@ import styles from 'styles/form/index.scss';
 import type {InputDefaults} from 'typings/form';
 
 import {mapRefs, objectToFormData} from 'modules/helpers';
+import {InputComponents} from 'typings/form';
 
 import {InputHandle} from './layout/input';
 
@@ -13,10 +14,10 @@ import * as Inputs from './layout/input-types';
 
 import {InputFailedValidators} from './layout/input';
 
-import InputGroup, {InputGroupFailedValidators, InputGroupHandle}
+import InputGroup, {InputGroupFailedValidators}
     from '../form-builder/layout/input-group';
 
-import InputGroupRepeater, {InputGroupRepeaterFailedValidators, InputGroupRepeaterHandle}
+import InputGroupRepeater, {InputGroupRepeaterFailedValidators}
     from '../form-builder/layout/input-group-repeater';
 
 import {FormContext} from './context';
@@ -48,8 +49,6 @@ export type FormProps = {
 
 const inputComponentTypes = [...inputTypes, InputGroup, InputGroupRepeater];
 
-type InputComponent = InputHandle|InputGroupHandle|InputGroupRepeaterHandle;
-
 /**
  * The component that builds the form.
  * @param {FormProps} props
@@ -57,7 +56,7 @@ type InputComponent = InputHandle|InputGroupHandle|InputGroupRepeaterHandle;
  */
 export default function Form(props : FormProps) : JSX.Element {
     const inputDefaults = props.inputDefaults ?? {};
-    const inputComponents : React.RefObject<Array<InputComponent>> = useRef([]);
+    const inputComponents : React.RefObject<Array<InputComponents>> = useRef([]);
 
     const [failedValidators, setFailedValidators] = useState([]);
     const [submitPhase, setSubmitPhase] = useState(SubmitPhase.Stale);
@@ -65,10 +64,10 @@ export default function Form(props : FormProps) : JSX.Element {
 
     /**
      * Finds the invalid input if there is any.
-     * @param {Array<InputComponent>} components
+     * @param {Array<InputComponents>} components
      * @return {InputHandle} The invalid input.
      */
-    function findInvalidInput(components: Array<InputComponent>) : InputHandle {
+    function findInvalidInput(components: Array<InputComponents>) : InputHandle {
         for (let i = 0; i < components.length; i++) {
             const component = components[i];
 
@@ -111,12 +110,12 @@ export default function Form(props : FormProps) : JSX.Element {
 
     /**
      * Collects the components form data.
-     * @param {Array<InputComponent>} components The components to traverse.
+     * @param {Array<InputComponents>} components The components to traverse.
      * @param {boolean} isObject The data to collect the values into.
      * @return {object|Array<object>}
      */
     function collectData(
-        components: Array<InputComponent>,
+        components: Array<InputComponents>,
         isObject: boolean,
     ) : object|Array<object> {
         let data = isObject ? {} : [];

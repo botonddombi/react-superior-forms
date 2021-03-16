@@ -37,7 +37,7 @@ export type InputType = {
     onChange?: (value : any) => void
     onValidate?: (
         failedValidators: InputFailedValidators,
-        inputComponent: React.RefObject<any>
+        inputComponent: React.RefObject<InputComponent>
     ) => void
 };
 
@@ -55,7 +55,6 @@ export interface InputHandle {
     name: string,
     disabled: boolean,
 
-
     component: React.RefObject<InputComponent>,
     wrapper: React.RefObject<HTMLDivElement>,
 }
@@ -63,12 +62,12 @@ export interface InputHandle {
 /**
  * The input component which all other inputs of the form share.
  * @param {InputProps} props
- * @param {React.RefObject<React.ReactElement>} ref
+ * @param {React.RefObject<InputHandle>} ref
  * @return {JSX.Element}
  */
 function Input(
     props: InputProps,
-    ref: React.RefObject<any>,
+    ref: React.RefObject<InputHandle>,
 ) : JSX.Element {
     const [value, setValue] = useState<any>(props.defaultValue ?? null);
     const [processedValue, setProcessedValue] = useState<any>(value);

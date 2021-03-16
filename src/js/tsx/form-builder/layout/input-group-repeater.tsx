@@ -95,7 +95,7 @@ export interface InputGroupRepeaterHandle {
  */
 function InputGroupRepeater(
     props: InputGroupRepeaterProps,
-    ref: React.RefObject<any>,
+    ref: React.RefObject<InputGroupRepeaterHandle>,
 ) : JSX.Element {
     const fieldset : React.RefObject<HTMLFieldSetElement> = useRef();
     const inputGroups : React.RefObject<Array<InputGroupHandle>> = useRef();
@@ -124,11 +124,11 @@ function InputGroupRepeater(
      * Captures the validation of all inputs placed in this group.
      * Additionally, checks whether all inputs are clear of failed validators.
      * @param {InputGroupFailedValidators} currentfailedValidators The failed validators.
-     * @param {InputGroup} inputGroupComponent The group component that was validated.
+     * @param {React.RefObject<InputGroupHandle>} inputGroupComponent The group component that was validated.
      */
     const onValidate = useCallback((
         currentfailedValidators: InputGroupFailedValidators,
-        inputGroupComponent: React.RefObject<any>,
+        inputGroupComponent: React.RefObject<InputGroupHandle>,
     ) => {
         const newFailedValidators = inputGroups.current
             .reduce(

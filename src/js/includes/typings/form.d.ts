@@ -1,4 +1,7 @@
 import { InputFormatterTypes, InputValidatorTypes } from 'constants/enums';
+import {InputHandle} from '../../tsx/form/layout/input';
+import {InputGroupHandle} from '../../tsx/form-builder/layout/input-group';
+import {InputGroupRepeaterHandle} from '../../tsx/form-builder/layout/input-group-repeater';
 
 export type Formatter = boolean | string | ((value: any) => any) | InputFormatter | CustomInputFormatter  | Array<string|((value: any) => any)|InputFormatter|CustomInputFormatter>;
 
@@ -36,3 +39,5 @@ export type InputDefaults = {
     process?: boolean | ((value : any) => any),
     format?: Formatter
 };
+
+export type InputComponents = InputHandle|InputGroupHandle|InputGroupRepeaterHandle;

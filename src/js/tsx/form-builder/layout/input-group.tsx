@@ -2,13 +2,14 @@ import React, {useRef, useState, useCallback, useImperativeHandle} from 'react';
 
 import classNames from 'classnames';
 
-import type {InputFailedValidators, InputHandle} from '../../form/layout/input';
+import type {InputFailedValidators} from '../../form/layout/input';
 import type {InputGroupRepeaterOptions} from './input-group-repeater';
 import type {InputOptions, CustomInputOptions} from '../index';
 
 import styles from 'styles/form/layout/input-group.scss';
 
 import {mapRefs} from 'modules/helpers';
+import {InputComponents} from 'typings/form';
 
 import {
     InputValidator,
@@ -17,7 +18,7 @@ import {
 
 import * as Inputs from '../../form/layout/input-types';
 
-import InputGroupRepeater, {InputGroupRepeaterFailedValidators, InputGroupRepeaterHandle}
+import InputGroupRepeater, {InputGroupRepeaterFailedValidators}
     from './input-group-repeater';
 
 const inputTypes = Object.values(Inputs);
@@ -60,7 +61,7 @@ export type InputGroupFailedValidators = Array<
 
 export interface InputGroupHandle {
     ref: React.RefObject<any>,
-    inputComponents : React.RefObject<Array<InputComponent>>,
+    inputComponents : React.RefObject<Array<InputComponents>>,
 
     failedValidators: InputGroupFailedValidators
 
@@ -70,17 +71,15 @@ export interface InputGroupHandle {
 const baseClassName = 'input-group';
 const inputComponentTypes = [...inputTypes, InputGroup, InputGroupRepeater];
 
-type InputComponent = InputHandle|InputGroupHandle|InputGroupRepeaterHandle;
-
 /**
  * A group that wraps one or multiple inputs.
  * @param {InputGroupProps} props
- * @param {React.RefObject<any>} ref
+ * @param {React.RefObject<InputGroupHandle>} ref
  * @return {JSX.Element}
  */
-function InputGroup(props: InputGroupProps, ref: React.RefObject<any>) : JSX.Element {
+function InputGroup(props: InputGroupProps, ref: React.RefObject<InputGroupHandle>) : JSX.Element {
     const fieldset : React.RefObject<HTMLFieldSetElement> = useRef();
-    const inputComponents : React.RefObject<Array<InputComponent>> = useRef();
+    const inputComponents : React.RefObject<Array<InputComponents>> = useRef();
     const [failedValidators, setFailedValidators] = useState<InputGroupFailedValidators>([]);
 
     useImperativeHandle(ref, () : InputGroupHandle => ({
@@ -100,14 +99,14 @@ function InputGroup(props: InputGroupProps, ref: React.RefObject<any>) : JSX.Ele
      *  InputGroupFailedValidators|
      *  InputGroupRepeaterFailedValidators
      * } currentfailedValidators The failed validators.
-     * @param {Inputs.Input|InputGroup|InputGroupRepeater} inputComponent The component that was validated.
+     * @param {InputComponents} inputComponent The component that was validated.
      */
     const onValidate = useCallback((
         currentfailedValidators:
             InputFailedValidators |
             InputGroupFailedValidators |
             InputGroupRepeaterFailedValidators,
-        inputComponent: React.RefObject<any>,
+        inputComponent: React.RefObject<InputComponents>,
     ) => {
         const newFailedValidators = inputComponents.current
             .reduce(
