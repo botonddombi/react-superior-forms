@@ -23,8 +23,6 @@ import InputGroupRepeater, {InputGroupRepeaterFailedValidators}
 import {FormContext} from './context';
 import {SubmitPhase} from 'constants/enums';
 
-const inputTypes = Object.values(Inputs);
-
 export type FormProps = {
     route: string,
     method?: string,
@@ -47,7 +45,98 @@ export type FormProps = {
     children?: React.ReactNode|React.ReactElement[]|React.ReactElement
 };
 
+type InputComponentsFailedValidators =
+    InputFailedValidators |
+    InputGroupFailedValidators |
+    InputGroupRepeaterFailedValidators;
+
+const inputTypes = Object.values(Inputs);
 const inputComponentTypes = [...inputTypes, InputGroup, InputGroupRepeater];
+
+/**
+ * Finds the invalid input if there is any.
+ * @param {Array<InputComponents>} components
+ * @return {InputHandle} The invalid input.
+ */
+function findInvalidInput(components: Array<InputComponents>) : InputHandle {
+    for (let i = 0; i < components.length; i++) {
+        const component = components[i];
+
+        if ('inputComponents' in component) {
+            /**
+             * When the component is an InputGroup.
+             */
+            const invalidInput = findInvalidInput(component.inputComponents.current);
+            if (invalidInput) {
+                return invalidInput;
+            }
+        } else if ('inputGroups' in component) {
+            /**
+             * When the component is an InputGroupRepeater.
+             */
+            const invalidInput = findInvalidInput(component.inputGroups.current);
+            if (invalidInput) {
+                return invalidInput;
+            }
+        } else {
+            /**
+             * When the component is an Input.
+             */
+            if (component.failedValidators.length) {
+                return component;
+            }
+        }
+    }
+
+    return null;
+}
+
+/**
+ * Collects the components form data.
+ * @param {Array<InputComponents>} components The components to traverse.
+ * @param {boolean} isObject The data to collect the values into.
+ * @return {object|Array<object>}
+ */
+function collectData(
+    components: Array<InputComponents>,
+    isObject: boolean,
+) : object|Array<object> {
+    let data = isObject ? {} : [];
+
+    components.forEach((component, index) => {
+        if ('inputComponents' in component) {
+            /**
+             * When the component is an InputGroup.
+             */
+            const object = collectData(component.inputComponents.current, true);
+            if (Object.keys(object).length !== 0) {
+                if (isObject) {
+                    if (component.name === undefined) {
+                        data = {...data, ...object};
+                    } else {
+                        data[component.name] = object;
+                    }
+                } else {
+                    data[index] = object;
+                }
+            }
+        } else if ('inputGroups' in component) {
+            /**
+             * When the component is an InputGroupRepeater.
+             */
+            const array = collectData(component.inputGroups.current, false) as Array<object>;
+            if (array.length !== 0) {
+                data[component.name] = array;
+            }
+        } else {
+            if (component.disabled !== true) {
+                data[component.name] = component.processedValue;
+            }
+        }
+    });
+
+    return data;
+}
 
 /**
  * The component that builds the form.
@@ -63,96 +152,11 @@ export default function Form(props : FormProps) : JSX.Element {
     const [submitAttempted, setSubmitAttempted] = useState(false);
 
     /**
-     * Finds the invalid input if there is any.
-     * @param {Array<InputComponents>} components
-     * @return {InputHandle} The invalid input.
-     */
-    function findInvalidInput(components: Array<InputComponents>) : InputHandle {
-        for (let i = 0; i < components.length; i++) {
-            const component = components[i];
-
-            if ('inputComponents' in component) {
-                /**
-                 * When the component is an InputGroup.
-                 */
-                const invalidInput = findInvalidInput(component.inputComponents.current);
-                if (invalidInput) {
-                    return invalidInput;
-                }
-            } else if ('inputGroups' in component) {
-                /**
-                 * When the component is an InputGroupRepeater.
-                 */
-                const invalidInput = findInvalidInput(component.inputGroups.current);
-                if (invalidInput) {
-                    return invalidInput;
-                }
-            } else {
-                /**
-                 * When the component is an Input.
-                 */
-                if (component.failedValidators.length) {
-                    return component;
-                }
-            }
-        }
-
-        return null;
-    }
-
-    /**
      * Finds the first invalid input.
      * @return {InputHandle} The invalid input.
      */
     function findFirstInvalidInput() : InputHandle {
         return findInvalidInput(inputComponents.current);
-    }
-
-    /**
-     * Collects the components form data.
-     * @param {Array<InputComponents>} components The components to traverse.
-     * @param {boolean} isObject The data to collect the values into.
-     * @return {object|Array<object>}
-     */
-    function collectData(
-        components: Array<InputComponents>,
-        isObject: boolean,
-    ) : object|Array<object> {
-        let data = isObject ? {} : [];
-
-        components.forEach((component, index) => {
-            if ('inputComponents' in component) {
-                /**
-                 * When the component is an InputGroup.
-                 */
-                const object = collectData(component.inputComponents.current, true);
-                if (Object.keys(object).length !== 0) {
-                    if (isObject) {
-                        if (component.name === undefined) {
-                            data = {...data, ...object};
-                        } else {
-                            data[component.name] = object;
-                        }
-                    } else {
-                        data[index] = object;
-                    }
-                }
-            } else if ('inputGroups' in component) {
-                /**
-                 * When the component is an InputGroupRepeater.
-                 */
-                const array = collectData(component.inputGroups.current, false) as Array<object>;
-                if (array.length !== 0) {
-                    data[component.name] = array;
-                }
-            } else {
-                if (component.disabled !== true) {
-                    data[component.name] = component.processedValue;
-                }
-            }
-        });
-
-        return data;
     }
 
     /**
@@ -257,33 +261,28 @@ export default function Form(props : FormProps) : JSX.Element {
     /**
      * Captures the validation of all inputs placed in this form.
      * Additionally, checks whether all inputs are clear of failed validators.
-     * @param {InputFailedValidators|InputGroupFailedValidators|InputGroupRepeaterFailedValidators} failedValidators
-     * The failed validators.
-     * @param {InputHandle|InputGroupHandle|InputGroupRepeaterHandle} inputComponent The component that was validated.
+     * @param {InputComponentsFailedValidators} failedValidators The failed validators.
+     * @param {React.RefObject<InputComponents>} inputComponent The component that was validated.
      */
-    const onValidate = useCallback(
-        (
-            failedValidators:
-                InputFailedValidators |
-                InputGroupFailedValidators |
-                InputGroupRepeaterFailedValidators,
-            inputComponent: React.RefObject<any>,
-        ) => {
-            setFailedValidators(
-                inputComponents.current
-                    .reduce(
-                        (previous, current) => [
-                            ...(
-                                current.ref.current === inputComponent.current ?
-                                    failedValidators :
-                                    current.failedValidators
-                            ),
-                            ...previous,
-                        ],
-                        [],
-                    ),
-            );
-        }, []);
+    const onValidate = useCallback((
+        failedValidators: InputComponentsFailedValidators,
+        inputComponent: React.RefObject<InputComponents>,
+    ) => {
+        setFailedValidators(
+            inputComponents.current
+                .reduce(
+                    (previous, current) => [
+                        ...(
+                            current.ref.current === inputComponent.current ?
+                                failedValidators :
+                                current.failedValidators
+                        ),
+                        ...previous,
+                    ],
+                    [],
+                ),
+        );
+    }, []);
 
     const children = useMemo(() => mapRefs(
         props.children,
