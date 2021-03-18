@@ -1,4 +1,4 @@
-import React, {useMemo, useEffect, useState, useContext} from 'react';
+import React, {useMemo, useEffect, useContext} from 'react';
 
 import classNames from 'classnames';
 
@@ -29,6 +29,8 @@ type InputValidationWrapperProps = {
     validators: Array<InputValidator|CustomInputValidator>,
     hideValidateMessage: boolean,
 
+    failedValidators: InputFailedValidators,
+
     required?: boolean,
 
     children: React.ReactElement,
@@ -43,7 +45,6 @@ type InputValidationWrapperProps = {
  */
 export default function InputValidationWrapper(props : InputValidationWrapperProps) {
     const submitAttempted : boolean = useContext(FormContext).submitAttempted;
-    const [failedValidators, setFailedValidators] = useState([]);
 
     /**
      * Validates the input and fires the 'onValidate' callback
@@ -55,30 +56,28 @@ export default function InputValidationWrapper(props : InputValidationWrapperPro
         );
 
         props.onValidate(validators);
-
-        setFailedValidators(validators);
-    }, [props.validators, props.value, props.onValidate]);
+    }, [props.validators, props.value]);
 
     /**
      * The first failed validator's message to display.
      */
     const validationMessage = useMemo(() : React.ReactNode | null => {
         if (
-            failedValidators.length &&
+            props.failedValidators.length &&
             props.hideValidateMessage !== true &&
             (props.dirty || submitAttempted)
         ) {
             return <label>
                 {
                     getValidationMessage(
-                        failedValidators[0],
+                        props.failedValidators[0],
                         props.value,
                     )
                 }
             </label>;
         }
     }, [
-        failedValidators,
+        props.failedValidators,
         props.hideValidateMessage,
         props.dirty,
         submitAttempted,
@@ -99,7 +98,7 @@ export default function InputValidationWrapper(props : InputValidationWrapperPro
         >
             {
                 React.cloneElement(props.children, {
-                    failedValidators,
+                    failedValidators: props.failedValidators,
                     validationMessage,
                 })
             }

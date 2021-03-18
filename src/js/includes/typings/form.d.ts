@@ -18,16 +18,27 @@ export type CustomInputFormatter = {
 export type Validator = string | ((value: any) => any) | InputValidator | CustomInputValidator | Array<string|InputValidator|CustomInputValidator>;
 
 export type InputValidator = {
-    type?: Exclude<InputValidatorTypes, InputValidatorTypes.Custom>,
+    type?: Exclude<Exclude<InputValidatorTypes, InputValidatorTypes.Custom>, InputValidatorTypes.External>,
     arguments?: Array<any>
 }
 
 export type CustomInputValidator = {
     type: InputValidatorTypes.Custom,
     arguments?: Array<any>
-    message: string | ((validation: InputValidator|CustomInputValidator, value: any) => string|JSX.Element),
+    message: string | ((validation: CustomInputValidator, value: any) => string|JSX.Element),
     assert: (value: any) => boolean
 };
+
+export type ExternalFailedInputValidator = {
+    type: InputValidatorTypes.External,
+    message: string
+};
+
+type InputValidators =
+    | InputValidator
+    | CustomInputValidator
+    | ExternalFailedInputValidator;
+
 
 export type InputDefaults = {
     validate?: boolean | Validator,

@@ -13,24 +13,24 @@ import Form, {FormBuilder, InputTypes, InputGroup, InputGroupRepeater, NumberInp
 //     <TextInput name="name" validate={'max:50'} format={true}/>
 
 //     <label>Favourite Number</label>
-//     <TextInput name="favourite_number" validate={true} format={true} process={true}/>
+//     <NumberInput name="favourite_number" validate={true} process={true}/>
 
 //     <SubmitButton/>
 // </Form>;
 
-// const form =
-// <Form route="/create/user" json={true}>
-//     {/* <InputGroup name="user">
-//         <label>Username</label>
-//         <TextInput name="name" validate={'max:50'} format={true}/>
-//     </InputGroup> */}
-//     <InputGroup name="user_preferences">
-//         <label>Favourite Number</label>
-//         <NumberInput name="favourite_number" validate={true} process={true}/>
-//     </InputGroup>
+const form =
+<Form route="/create/user" json={true}>
+    {/* <InputGroup name="user">
+        <label>Username</label>
+        <TextInput name="name" validate={'max:50'} format={true}/>
+    </InputGroup> */}
+    <InputGroup name="user_preferences">
+        <label>Favourite Number</label>
+        <NumberInput name="favourite_number" validate={true} process={true}/>
+    </InputGroup>
 
-//     <SubmitButton/>
-// </Form>;
+    <SubmitButton/>
+</Form>;
 
 // const form =
 // <Form route="/create/users" json={true}>
@@ -204,13 +204,13 @@ import Form, {FormBuilder, InputTypes, InputGroup, InputGroupRepeater, NumberInp
 //     ]}
 // />;
 
-const YourCustomInputComponent = React.forwardRef((props:any, ref:any) => {
-    return <input type="text" disabled={props.disabled} onChange={(ev) => props.onChange(ev.target.value)} value={props.value ?? ''} ref={ref}/>;
-});
+// const YourCustomInputComponent = React.forwardRef((props:any, ref:any) => {
+//     return <input type="text" disabled={props.disabled} onChange={(ev) => props.onChange(ev.target.value)} value={props.value ?? ''} ref={ref}/>;
+// });
 
-const form = <Form route="/example">
-    <Input name="custom_stuff" component={<YourCustomInputComponent/>} disabled={Math.random() >= 0.5}/>
-    <SubmitButton/>
-</Form>;
+// const form = <Form route="/example">
+//     <Input name="custom_stuff" component={<YourCustomInputComponent/>} disabled={Math.random() >= 0.5}/>
+//     <SubmitButton/>
+// </Form>;
 
 ReactDOM.render(form, document.body.appendChild(document.createElement('div')));

@@ -1,34 +1,6 @@
 import React from 'react';
 
 /**
- * A non-complex way of cloning objects & arrays recursively.
- * @param {any} target The object to clone.
- * @return {any} The cloned object.
- */
-export function cloneDeep(target : any) : any {
-    const matchType = Object.prototype.toString.call(target).match(/ ([a-zA-Z]+)\]$/);
-    if (matchType) {
-        if (matchType[1] == 'Array') {
-            return [...target].map((item) => cloneDeep(item));
-        }
-
-        if (matchType[1] == 'Object') {
-            const object = {...target};
-
-            for (const key in object) {
-                if (Object.prototype.hasOwnProperty.call(object, key)) {
-                    object[key] = cloneDeep(object[key]);
-                }
-            }
-
-            return object;
-        }
-    }
-
-    return target;
-}
-
-/**
  * The recursive helpers function for mapRefs.
  * @param {any} children The children of the parent component.
  * @param {Array<any>} types The types the component should match.
@@ -69,21 +41,20 @@ function mapRefsRecursive(
 
                 return React.cloneElement(child, {
                     ref: (node) => {
-                        if (
-                            node &&
-                            (
-                                (
-                                    node.ref &&
-                                    targetRef.current.reduce(
-                                        (previous, current) =>
-                                            previous && (!current.ref || current.ref != node.ref),
-                                        true,
-                                    )
-                                ) ||
-                                (!node.ref && targetRef.current.indexOf(node) === -1)
-                            )
-                        ) {
-                            targetRef.current.push(node);
+                        if (node) {
+                            if (node.ref) {
+                                const index = targetRef.current.map(
+                                    (current) => current.ref,
+                                ).indexOf(node.ref);
+
+                                if (index === -1) {
+                                    targetRef.current.push(node);
+                                } else {
+                                    targetRef.current[index] = node;
+                                }
+                            } else if (!node.ref && targetRef.current.indexOf(node) === -1) {
+                                targetRef.current.push(node);
+                            }
 
                             const {ref} = child;
 

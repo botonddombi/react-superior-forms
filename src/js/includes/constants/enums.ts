@@ -20,6 +20,8 @@ export enum InputValidatorTypes {
 
     URL = 'url',
     Custom = 'custom',
+
+    External = 'external',
 }
 
 export enum InputFormatterTypes {

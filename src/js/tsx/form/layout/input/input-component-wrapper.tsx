@@ -10,7 +10,7 @@ import {
     CustomInputFormatter,
 } from 'typings/form';
 
-import {InputProps} from './index';
+import {InputFailedValidators, InputProps} from './index';
 
 import {FormContext} from '../../context';
 
@@ -48,6 +48,8 @@ type InputComponentWrapperProps = Omit<InputProps, 'onChange'> & {
     value: any,
     dirty: boolean,
 
+    failedValidators: InputFailedValidators,
+
     onChange?: (value: any, processedValue: any, initialCall: boolean) => void,
     onValidate?: (failedValidators: Array<InputValidator|CustomInputValidator>) => void
 }
@@ -70,7 +72,7 @@ export default function InputComponentWrapper(props : InputComponentWrapperProps
         const validate = props.validate ?? inputDefaults.validate ?? false;
 
         if (validate) {
-            if (props.required) {
+            if (props.required ?? inputDefaults.required ?? false) {
                 validators.push({
                     type: InputValidatorTypes.Required,
                 });
@@ -298,6 +300,7 @@ export default function InputComponentWrapper(props : InputComponentWrapperProps
             hideValidateMessage={
                 props.hideValidateMessage ?? inputDefaults.hideValidateMessage
             }
+            failedValidators={props.failedValidators}
             required={componentProps.required}
             onValidate={props.onValidate}
 

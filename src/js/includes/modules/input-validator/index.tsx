@@ -1,6 +1,6 @@
 import React from 'react';
 
-import {InputValidator, CustomInputValidator} from 'typings/form';
+import {InputValidator, CustomInputValidator, InputValidators} from 'typings/form';
 
 import {InputValidatorTypes} from 'constants/enums';
 
@@ -94,7 +94,6 @@ export function assertValidation(
 
     return false;
 }
-
 /**
  * Gets the message of a validation.
  * @param {FinalInputValidation} validation The input validation to extract the message for.
@@ -102,7 +101,7 @@ export function assertValidation(
  * @return {string|JSX.Element} The message explaining the cause of invalidation.
  */
 export function getValidationMessage(
-    validation : InputValidator|CustomInputValidator,
+    validation : InputValidators,
     value : any,
 ) : string|JSX.Element {
     switch (validation.type) {
@@ -200,6 +199,9 @@ export function getValidationMessage(
                 return validation.message(validation, value);
             }
         }
+        break;
+    case InputValidatorTypes.External:
+        return validation.message;
     }
 
     return 'Incorrect value';

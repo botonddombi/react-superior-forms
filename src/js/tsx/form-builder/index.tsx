@@ -8,7 +8,7 @@ import {InputGroupOptions} from './layout/input-group';
 
 import {Input, TextInput, NumberInput, EmailInput, PasswordInput} from '../form/layout/input-types';
 
-import Form, {FormProps} from '../form';
+import Form, {FormProps, FormHandle} from '../form';
 
 import InputGroup from './layout/input-group';
 import InputGroupRepeater from './layout/input-group-repeater';
@@ -56,9 +56,10 @@ function resolveInput(input : InputOptions|CustomInputOptions) : JSX.Element {
 /**
  * Builds the a form from the specified options.
  * @param {FormBuilderProps} props
+ * @param {React.RefObject<FormHandle>} ref
  * @return {JSX.Element}
  */
-export default function FormBuilder(props : FormBuilderProps) : JSX.Element {
+function FormBuilder(props: FormBuilderProps, ref: React.RefObject<FormHandle>) : JSX.Element {
     const {inputGroups, ...formProps} = props;
 
     /**
@@ -120,9 +121,12 @@ export default function FormBuilder(props : FormBuilderProps) : JSX.Element {
 
     return <Form
         {...formProps}
+        ref={ref}
     >
         {renderInputGroups(inputGroups)}
         <SubmitButton/>
         {(props.submitStatus ?? true) ? <SubmitStatus/> : null}
     </Form>;
 }
+
+export default React.forwardRef(FormBuilder);
