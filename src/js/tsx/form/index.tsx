@@ -1,4 +1,4 @@
-import React, {useRef, useState, useCallback, useMemo} from 'react';
+import React, {useRef, useState, useCallback, useMemo, useImperativeHandle} from 'react';
 import classNames from 'classnames';
 
 import styles from 'styles/form/index.scss';
@@ -21,20 +21,23 @@ import InputGroupRepeater, {InputGroupRepeaterFailedValidators}
     from '../form-builder/layout/input-group-repeater';
 
 import {FormContext} from './context';
-import {SubmitPhase} from 'constants/enums';
+import {SubmitPhase, InputValidatorTypes} from 'constants/enums';
 
 export type FormProps = {
     route: string,
     method?: string,
     json?: boolean,
+    acceptJson?: boolean,
 
-    onSuccess?: (event: ProgressEvent<XMLHttpRequest>, data: object) => void,
-    onFail?: (event: ProgressEvent<XMLHttpRequest>, data: object) => void,
+    onSuccess?: (event: ProgressEvent<XMLHttpRequest & {responseJSON?: any}>, data: object) => void,
+    onFail?: (event: ProgressEvent<XMLHttpRequest & {responseJSON?: any}>, data: object) => void,
 
     onSend?: (data: object) => void,
     onSubmit?: () => void,
 
-    processBeforeSend?: (data: object) => object,
+    processBeforeSend?: (data: collectMapValue) => collectMapValue,
+
+    ref?: React.RefObject<FormHandle>,
 
     headers?: {[key: string] : string},
 
@@ -50,57 +53,35 @@ type InputComponentsFailedValidators =
     InputGroupFailedValidators |
     InputGroupRepeaterFailedValidators;
 
+export interface FormHandle {
+    shiftFailedValidators: (object) => void
+}
+
 const inputTypes = Object.values(Inputs);
 const inputComponentTypes = [...inputTypes, InputGroup, InputGroupRepeater];
 
-/**
- * Finds the invalid input if there is any.
- * @param {Array<InputComponents>} components
- * @return {InputHandle} The invalid input.
- */
-function findInvalidInput(components: Array<InputComponents>) : InputHandle {
-    for (let i = 0; i < components.length; i++) {
-        const component = components[i];
+type collectMapValue = {
+    [key: string]: collectMapValue|any
+};
 
-        if ('inputComponents' in component) {
-            /**
-             * When the component is an InputGroup.
-             */
-            const invalidInput = findInvalidInput(component.inputComponents.current);
-            if (invalidInput) {
-                return invalidInput;
-            }
-        } else if ('inputGroups' in component) {
-            /**
-             * When the component is an InputGroupRepeater.
-             */
-            const invalidInput = findInvalidInput(component.inputGroups.current);
-            if (invalidInput) {
-                return invalidInput;
-            }
-        } else {
-            /**
-             * When the component is an Input.
-             */
-            if (component.failedValidators.length) {
-                return component;
-            }
-        }
-    }
+type collectMap = {
+    [key: string]: collectMap|InputComponents
+};
 
-    return null;
-}
+type collectArray = Array<collectMap>;
 
 /**
- * Collects the components form data.
+ * Collects the form input components.
  * @param {Array<InputComponents>} components The components to traverse.
  * @param {boolean} isObject The data to collect the values into.
- * @return {object|Array<object>}
+ * @param {string} grabKey The key to grab from the input component.
+ * @return {collectMap | collectArray | collectMapValue}
  */
-function collectData(
+function collect(
     components: Array<InputComponents>,
     isObject: boolean,
-) : object|Array<object> {
+    grabKey: string = null,
+) : collectMap | collectArray | collectMapValue {
     let data = isObject ? {} : [];
 
     components.forEach((component, index) => {
@@ -108,7 +89,7 @@ function collectData(
             /**
              * When the component is an InputGroup.
              */
-            const object = collectData(component.inputComponents.current, true);
+            const object = collect(component.inputComponents.current, true, grabKey);
             if (Object.keys(object).length !== 0) {
                 if (isObject) {
                     if (component.name === undefined) {
@@ -124,13 +105,16 @@ function collectData(
             /**
              * When the component is an InputGroupRepeater.
              */
-            const array = collectData(component.inputGroups.current, false) as Array<object>;
+            const array = collect(component.inputGroups.current, false, grabKey) as Array<object>;
             if (array.length !== 0) {
                 data[component.name] = array;
             }
         } else {
+            /**
+             * When the component is an Input.
+             */
             if (component.disabled !== true) {
-                data[component.name] = component.processedValue;
+                data[component.name] = grabKey ? component[grabKey] : component;
             }
         }
     });
@@ -139,11 +123,70 @@ function collectData(
 }
 
 /**
+ * Finds the invalid input if there is any.
+ * @param {object|Array<object>} components
+ * @return {InputHandle} The invalid input.
+ */
+function findInvalidInput(components: object|Array<object>) : InputHandle {
+    for (const key in components) {
+        if (Object.prototype.hasOwnProperty.call(components, key)) {
+            const component = components[key];
+
+            if ('failedValidators' in component) {
+                if (component.failedValidators.length) {
+                    return component;
+                }
+            } else {
+                const invalidInput = findInvalidInput(component);
+                if (invalidInput) return invalidInput;
+            }
+        }
+    }
+}
+
+/**
+ * Shifts failed validators based on an object map.
+ * @param {object|Array<object>} componentsMap The components to shift the validators to.
+ * @param {object|Array<object>} messagesMap The messages to use for the validators.
+ */
+function shiftFailedValidatorsRecursive(
+    componentsMap: object|Array<object>,
+    messagesMap: object|Array<object>,
+) {
+    for (const key in componentsMap) {
+        if (Object.prototype.hasOwnProperty.call(componentsMap, key)) {
+            let messages = messagesMap[key];
+            const components = componentsMap[key];
+
+            if (typeof messages !== 'undefined') {
+                if ('setFailedValidators' in components) {
+                    if (typeof messages === 'string') {
+                        messages = [messages];
+                    }
+
+                    components.setFailedValidators([
+                        ...messages.map(
+                            (message) => ({type: InputValidatorTypes.External, message}),
+                        ),
+                        ...components.failedValidators,
+                    ]);
+                } else {
+                    if (typeof messages === 'object') {
+                        shiftFailedValidatorsRecursive(components, messages);
+                    }
+                }
+            }
+        }
+    }
+}
+
+/**
  * The component that builds the form.
  * @param {FormProps} props
+ * @param {React.RefObject<FormHandle>} ref
  * @return {JSX.Element}
  */
-export default function Form(props : FormProps) : JSX.Element {
+function Form(props: FormProps, ref: React.RefObject<FormHandle>) : JSX.Element {
     const inputDefaults = props.inputDefaults ?? {};
     const inputComponents : React.RefObject<Array<InputComponents>> = useRef([]);
 
@@ -151,20 +194,35 @@ export default function Form(props : FormProps) : JSX.Element {
     const [submitPhase, setSubmitPhase] = useState(SubmitPhase.Stale);
     const [submitAttempted, setSubmitAttempted] = useState(false);
 
+    useImperativeHandle(ref, () : FormHandle => ({
+        shiftFailedValidators,
+    }));
+
+    /**
+     * Shifts temporary failed validators for the input components matched.
+     * The object parameter should match the structure of the sent data object.
+     * @param {object} messages The object containing the error messages.
+     */
+    function shiftFailedValidators(messages: object) {
+        const components = collect(inputComponents.current, true);
+        shiftFailedValidatorsRecursive(components, messages);
+    }
+
     /**
      * Finds the first invalid input.
      * @return {InputHandle} The invalid input.
      */
     function findFirstInvalidInput() : InputHandle {
-        return findInvalidInput(inputComponents.current);
+        const components = collect(inputComponents.current, true);
+        return findInvalidInput(components);
     }
 
     /**
      * Collects the entire form data.
-     * @return {object} The form data packed into an object.
+     * @return {collectMapValue} The form data packed into an object.
      */
-    function collectFormData() {
-        return collectData(inputComponents.current, true);
+    function collectFormData() : collectMapValue {
+        return collect(inputComponents.current, true, 'processedValue') as collectMapValue;
     }
 
     /**
@@ -184,7 +242,15 @@ export default function Form(props : FormProps) : JSX.Element {
             }
         }
 
-        xhr.onloadend = function(event : ProgressEvent<XMLHttpRequest>) {
+        xhr.onloadend = function(event : ProgressEvent<XMLHttpRequest & {responseJSON?: any}>) {
+            if (props.acceptJson ?? props.json) {
+                try {
+                    event.target.responseJSON = JSON.parse(event.target.responseText);
+                } catch (error) {
+                    event.target.responseJSON = null;
+                }
+            }
+
             if (event.target.status == 200) {
                 setSubmitPhase(SubmitPhase.Success);
 
@@ -256,7 +322,7 @@ export default function Form(props : FormProps) : JSX.Element {
         }
 
         sendXhr();
-    }, [props]);
+    }, [props, inputComponents]);
 
     /**
      * Captures the validation of all inputs placed in this form.
@@ -319,3 +385,5 @@ export default function Form(props : FormProps) : JSX.Element {
         </FormContext.Provider>
     );
 }
+
+export default React.forwardRef(Form);
