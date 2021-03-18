@@ -52,6 +52,8 @@ export interface InputHandle {
     processedValue: any,
     failedValidators: InputFailedValidators,
 
+    setFailedValidators: React.Dispatch<InputFailedValidators>,
+
     name: string,
     disabled: boolean,
 
@@ -83,6 +85,8 @@ function Input(
         value,
         processedValue,
         failedValidators,
+
+        setFailedValidators,
 
         name: props.name,
         disabled: props.disabled,
@@ -140,6 +144,8 @@ function Input(
         dirty={dirty}
         onChange={onChange}
         onValidate={onValidate}
+
+        failedValidators={failedValidators}
 
         innerRef={wrapper}
     />;
