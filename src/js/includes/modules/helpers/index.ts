@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useCallback} from 'react';
 
 /**
  * The recursive helpers function for mapRefs.
@@ -23,13 +23,13 @@ function mapRefsRecursive(
 
                 for (const key in additionalFunctionProps) {
                     if (Object.prototype.hasOwnProperty.call(additionalFunctionProps, key)) {
-                        additionalProps[key] = (...args) => {
+                        additionalProps[key] = useCallback((...args) => {
                             if (typeof child.props[key] === 'function') {
                                 child.props[key](...args);
                             }
 
                             additionalFunctionProps[key](...args);
-                        };
+                        }, [additionalFunctionProps[key]]);
                     }
                 }
 
@@ -40,7 +40,7 @@ function mapRefsRecursive(
                 }
 
                 return React.cloneElement(child, {
-                    ref: (node) => {
+                    ref: useCallback((node) => {
                         if (node) {
                             if (node.ref) {
                                 const index = targetRef.current.map(
@@ -62,7 +62,7 @@ function mapRefsRecursive(
                                 ref(node);
                             }
                         }
-                    },
+                    }, []),
                     ...additionalProps,
                 });
             } else {

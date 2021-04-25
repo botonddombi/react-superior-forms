@@ -1,12 +1,11 @@
-import React, {useRef, useState, useCallback, useMemo, useImperativeHandle} from 'react';
+import React, {useRef, useState, useCallback, useImperativeHandle, useContext} from 'react';
 import classNames from 'classnames';
 
 import styles from 'styles/form/index.scss';
 
-import type {InputDefaults} from 'typings/form';
+import type {InputDefaults, InputComponents} from '../../includes/typings/form';
 
 import {mapRefs, objectToFormData} from 'modules/helpers';
-import {InputComponents} from 'typings/form';
 
 import {InputHandle} from './layout/input';
 
@@ -20,8 +19,8 @@ import InputGroup, {InputGroupFailedValidators}
 import InputGroupRepeater, {InputGroupRepeaterFailedValidators}
     from '../form-builder/layout/input-group-repeater';
 
-import {FormContext} from './context';
-import {SubmitPhase, InputValidatorTypes} from 'constants/enums';
+import {FormContext, FormDefaultsContext} from './context';
+import {SubmitPhase, InputValidatorTypes} from '../../includes/constants/enums';
 
 export type FormProps = {
     route: string,
@@ -54,7 +53,8 @@ type InputComponentsFailedValidators =
     InputGroupRepeaterFailedValidators;
 
 export interface FormHandle {
-    shiftFailedValidators: (object) => void
+    shiftFailedValidators: (object) => void,
+    submit: () => void
 }
 
 const inputTypes = Object.values(Inputs);
@@ -189,6 +189,7 @@ function shiftFailedValidatorsRecursive(
 function Form(props: FormProps, ref: React.RefObject<FormHandle>) : JSX.Element {
     const inputDefaults = props.inputDefaults ?? {};
     const inputComponents : React.RefObject<Array<InputComponents>> = useRef([]);
+    const formDefaults = useContext(FormDefaultsContext);
 
     const [failedValidators, setFailedValidators] = useState([]);
     const [submitPhase, setSubmitPhase] = useState(SubmitPhase.Stale);
@@ -196,6 +197,7 @@ function Form(props: FormProps, ref: React.RefObject<FormHandle>) : JSX.Element 
 
     useImperativeHandle(ref, () : FormHandle => ({
         shiftFailedValidators,
+        submit: () => onSubmit(),
     }));
 
     /**
@@ -234,16 +236,18 @@ function Form(props: FormProps, ref: React.RefObject<FormHandle>) : JSX.Element 
         const xhr = new XMLHttpRequest();
         xhr.open(props.method ?? 'POST', props.route ?? '/');
 
-        if (props.headers) {
-            for (const key in props.headers) {
-                if (Object.prototype.hasOwnProperty.call(props.headers, key)) {
-                    xhr.setRequestHeader(key, props.headers[key]);
+        const headers = props.headers ?? formDefaults.headers;
+
+        if (headers) {
+            for (const key in headers) {
+                if (Object.prototype.hasOwnProperty.call(headers, key)) {
+                    xhr.setRequestHeader(key, headers[key]);
                 }
             }
         }
 
         xhr.onloadend = function(event : ProgressEvent<XMLHttpRequest & {responseJSON?: any}>) {
-            if (props.acceptJson ?? props.json) {
+            if (props.acceptJson ?? formDefaults.acceptJson ?? props.json) {
                 try {
                     event.target.responseJSON = JSON.parse(event.target.responseText);
                 } catch (error) {
@@ -276,7 +280,7 @@ function Form(props: FormProps, ref: React.RefObject<FormHandle>) : JSX.Element 
             props.onSend(data);
         }
 
-        if (props.json === true) {
+        if ((props.json ?? formDefaults.json) === true) {
             xhr.setRequestHeader('Content-Type', 'application/json');
             xhr.send(JSON.stringify(data));
         } else {
@@ -350,15 +354,6 @@ function Form(props: FormProps, ref: React.RefObject<FormHandle>) : JSX.Element 
         );
     }, [inputComponents]);
 
-    const children = useMemo(() => mapRefs(
-        props.children,
-        inputComponentTypes,
-        inputComponents,
-        {
-            onValidate,
-        },
-    ), [props.children, onValidate]);
-
     return (
         <FormContext.Provider
             value={{
@@ -380,7 +375,16 @@ function Form(props: FormProps, ref: React.RefObject<FormHandle>) : JSX.Element 
                 }
                 onSubmit={onSubmit}
             >
-                {children}
+                {
+                    mapRefs(
+                        props.children,
+                        inputComponentTypes,
+                        inputComponents,
+                        {
+                            onValidate,
+                        },
+                    )
+                }
             </form>
         </FormContext.Provider>
     );

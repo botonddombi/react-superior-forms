@@ -1,7 +1,7 @@
 import React from 'react';
 
-import type {InputDefaults} from 'typings/form';
-import {SubmitPhase} from 'constants/enums';
+import type {InputDefaults} from '../../includes/typings/form';
+import {SubmitPhase} from '../../includes/constants/enums';
 
 export type FormContextType = {
     inputDefaults: InputDefaults,
@@ -13,3 +13,13 @@ export type FormContextType = {
 };
 
 export const FormContext : React.Context<FormContextType> = React.createContext(null);
+
+type FormDefaultsContextType = {
+    method?: string,
+    json?: boolean,
+    acceptJson?: boolean,
+    headers?: {[key: string] : string},
+};
+
+export const FormDefaultsContext : React.Context<FormDefaultsContextType> =
+React.createContext({});

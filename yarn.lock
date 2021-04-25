@@ -7760,6 +7760,14 @@ strip-json-comments@^3.1.0, strip-json-comments@^3.1.1:
   resolved "https://registry.yarnpkg.com/strip-json-comments/-/strip-json-comments-3.1.1.tgz#31f1281b3832630434831c310c01cccda8cbe006"
   integrity sha512-6fPc+R4ihwqP6N/aIv2f1gMH8lOVtWQHoqC4yK6oSDVVocumAsfCqjkXnqiYMhmMwS/mEHLp7Vehlt3ql6lEig==
 
+style-loader-skip-ssr@^1.0.1:
+  version "1.0.1"
+  resolved "https://registry.yarnpkg.com/style-loader-skip-ssr/-/style-loader-skip-ssr-1.0.1.tgz#3564daece42eeed2ef571b03e51e5feea2222946"
+  integrity sha512-pTY9kmmM7Jk2SQcH98sdI5h2wezrAfdtH8IqPkUNZ67gJGvA8Y4kHX4drKQ/PVFcBLSRbxyR9P/EWEs9A007OQ==
+  dependencies:
+    loader-utils "^2.0.0"
+    schema-utils "^3.0.0"
+
 style-loader@^2.0.0:
   version "2.0.0"
   resolved "https://registry.yarnpkg.com/style-loader/-/style-loader-2.0.0.tgz#9669602fd4690740eaaec137799a03addbbc393c"

@@ -4,7 +4,7 @@ import classNames from 'classnames';
 
 import styles from 'styles/form/layout/status/submit-status.scss';
 
-import {SubmitPhase} from 'constants/enums';
+import {SubmitPhase} from '../../../../includes/constants/enums';
 
 import {FormContext} from '../../context';
 

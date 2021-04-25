@@ -8,7 +8,7 @@ import type {InputComponentProps} from '../input/input-component-wrapper';
 import type {InputType} from '../input';
 
 import Input, {InputHandle} from '../input';
-import {InputTypes} from 'constants/enums';
+import {InputTypes} from '../../../../includes/constants/enums';
 import {InputComponent} from '../input/input-component-wrapper';
 
 type DefaultInputTypes = 'text' | 'password';

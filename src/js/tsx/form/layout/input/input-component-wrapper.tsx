@@ -1,6 +1,10 @@
 import React, {useContext, useEffect, useMemo, useCallback} from 'react';
 
-import {InputTypes, InputValidatorTypes, InputFormatterTypes} from 'constants/enums';
+import {
+    InputTypes,
+    InputValidatorTypes,
+    InputFormatterTypes,
+} from '../../../../includes/constants/enums';
 
 import {
     InputValidator,
@@ -8,7 +12,7 @@ import {
     InputDefaults,
     InputFormatter,
     CustomInputFormatter,
-} from 'typings/form';
+} from '../../../../includes/typings/form';
 
 import {InputFailedValidators, InputProps} from './index';
 
@@ -16,8 +20,8 @@ import {FormContext} from '../../context';
 
 import InputValidationWrapper from './input-validation-wrapper';
 
-import {format} from 'modules/input-formatter';
-import {process} from 'modules/input-processor';
+import {format} from '../../../../includes/modules/input-formatter';
+import {process} from '../../../../includes/modules/input-processor';
 
 export interface InputComponent {
     ref?: React.RefObject<any>,

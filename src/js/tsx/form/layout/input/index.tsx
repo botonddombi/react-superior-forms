@@ -1,13 +1,13 @@
 import React, {useCallback, useState, useRef, useImperativeHandle} from 'react';
 
-import {InputTypes} from 'constants/enums';
+import {InputTypes} from '../../../../includes/constants/enums';
 
 import {
     Validator,
     Formatter,
     InputValidator,
     CustomInputValidator,
-} from 'typings/form';
+} from '../../../../includes/typings/form';
 
 import InputComponentWrapper, {InputComponent} from './input-component-wrapper';
 

@@ -1,6 +1,6 @@
 import React from 'react';
 
-import {InputTypes} from 'constants/enums';
+import {InputTypes} from '../../includes/constants/enums';
 
 import type {InputType} from '../form/layout/input';
 import type {InputWrapperType} from './layout/input-wrapper';

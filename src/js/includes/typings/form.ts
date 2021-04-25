@@ -1,4 +1,4 @@
-import { InputFormatterTypes, InputValidatorTypes } from 'constants/enums';
+import { InputFormatterTypes, InputValidatorTypes } from '../constants/enums';
 import {InputHandle} from '../../tsx/form/layout/input';
 import {InputGroupHandle} from '../../tsx/form-builder/layout/input-group';
 import {InputGroupRepeaterHandle} from '../../tsx/form-builder/layout/input-group-repeater';
@@ -34,7 +34,7 @@ export type ExternalFailedInputValidator = {
     message: string
 };
 
-type InputValidators =
+export type InputValidators =
     | InputValidator
     | CustomInputValidator
     | ExternalFailedInputValidator;

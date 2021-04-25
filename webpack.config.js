@@ -72,6 +72,7 @@ module.exports = {
         path: path.resolve(__dirname, isBeingServed ? 'demo/dist' : 'lib'),
         filename: 'js/[name].js',
         pathinfo: !shouldMinimize,
+        globalObject: 'this',
         ...output
     },
     module : {
@@ -95,7 +96,7 @@ module.exports = {
                 test: /\.(sass|scss|css)$/,
                 exclude: /node_modules/,
                 use: [
-                    'style-loader',
+                    'style-loader-skip-ssr',
                     {
                         loader: 'css-loader',
                         options: {

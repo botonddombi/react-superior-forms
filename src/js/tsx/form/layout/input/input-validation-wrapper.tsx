@@ -2,14 +2,14 @@ import React, {useMemo, useEffect, useContext} from 'react';
 
 import classNames from 'classnames';
 
-import {InputTypes} from 'constants/enums';
+import {InputTypes} from '../../../../includes/constants/enums';
 
 import {
     InputValidator,
     CustomInputValidator,
-} from 'typings/form';
+} from '../../../../includes/typings/form';
 
-import {assertValidation, getValidationMessage} from 'modules/input-validator';
+import {assertValidation, getValidationMessage} from '../../../../includes/modules/input-validator';
 
 import styles from 'styles/form/layout/inputs/input.scss';
 

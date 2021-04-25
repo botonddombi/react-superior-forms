@@ -1,8 +1,8 @@
 import React from 'react';
 
-import {InputValidator, CustomInputValidator, InputValidators} from 'typings/form';
+import {InputValidator, CustomInputValidator, InputValidators} from '../../typings/form';
 
-import {InputValidatorTypes} from 'constants/enums';
+import {InputValidatorTypes} from '../../constants/enums';
 
 /**
  * Checks whether an input value is between the boundaries specified in args.

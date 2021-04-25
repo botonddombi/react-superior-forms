@@ -1,4 +1,4 @@
-import {InputTypes} from 'constants/enums';
+import {InputTypes} from '../../constants/enums';
 
 /**
  * Processes an input value according to the input type or process setting/function.

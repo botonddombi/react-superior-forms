@@ -8,13 +8,12 @@ import type {InputOptions, CustomInputOptions} from '../index';
 
 import styles from 'styles/form/layout/input-group.scss';
 
-import {mapRefs} from 'modules/helpers';
-import {InputComponents} from 'typings/form';
-
-import {
+import {mapRefs} from '../../../includes/modules/helpers';
+import type {
+    InputComponents,
     InputValidator,
     CustomInputValidator,
-} from 'typings/form';
+} from '../../../includes/typings/form';
 
 import * as Inputs from '../../form/layout/input-types';
 

@@ -2,7 +2,7 @@ import React, {useImperativeHandle, useRef, useState, useCallback} from 'react';
 
 import classNames from 'classnames';
 
-import {mapRefs} from 'modules/helpers';
+import {mapRefs} from '../../../includes/modules/helpers';
 
 import styles from 'styles/form/layout/input-group-repeater.scss';
 

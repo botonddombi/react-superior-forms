@@ -1,6 +1,6 @@
-import {CustomInputFormatter, InputFormatter} from 'typings/form';
+import {CustomInputFormatter, InputFormatter} from '../../../includes/typings/form';
 
-import {InputFormatterTypes, InputTypes} from 'constants/enums';
+import {InputFormatterTypes, InputTypes} from '../../constants/enums';
 
 /**
  * Formats the input value based on the formatter.

@@ -1,9 +1,9 @@
-import React, {useRef, useState, useCallback, useMemo} from 'react';
+import React, {useRef, useState, useCallback} from 'react';
 
 import classNames from 'classnames';
 
-import {mapRefs} from 'modules/helpers';
-import {capitalize} from 'modules/text-transform';
+import {mapRefs} from '../../../includes/modules/helpers';
+import {capitalize} from '../../../includes/modules/text-transform';
 
 import styles from 'styles/form/layout/input-wrapper.scss';
 
@@ -53,17 +53,6 @@ export default function InputWrapper(props : InputWrapperProps) : JSX.Element {
         );
     }, []);
 
-    const children = useMemo(() => mapRefs(
-        props.children,
-        inputTypes,
-        inputs,
-        {
-            onValidate,
-        },
-    ), [
-        props.children,
-    ]);
-
     return <React.Fragment>
         {props.before ?? ''}
         <div
@@ -89,7 +78,16 @@ export default function InputWrapper(props : InputWrapperProps) : JSX.Element {
                     ''
             }
             {props.beforeInput ?? ''}
-            {children}
+            {
+                mapRefs(
+                    props.children,
+                    inputTypes,
+                    inputs,
+                    {
+                        onValidate,
+                    },
+                )
+            }
             {props.afterInput ?? ''}
         </div>
         {props.after ?? ''}
