@@ -18,7 +18,7 @@ type FormDefaultsContextType = {
     method?: string,
     json?: boolean,
     acceptJson?: boolean,
-    headers?: {[key: string] : string},
+    headers?: {[key: string] : string | (() => string)},
 };
 
 export const FormDefaultsContext : React.Context<FormDefaultsContextType> =

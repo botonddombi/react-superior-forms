@@ -38,7 +38,7 @@ export type FormProps = {
 
     ref?: React.RefObject<FormHandle>,
 
-    headers?: {[key: string] : string},
+    headers?: {[key: string] : string | (() => string)},
 
     className?: string,
 
@@ -241,7 +241,13 @@ function Form(props: FormProps, ref: React.RefObject<FormHandle>) : JSX.Element 
         if (headers) {
             for (const key in headers) {
                 if (Object.prototype.hasOwnProperty.call(headers, key)) {
-                    xhr.setRequestHeader(key, headers[key]);
+                    const header = headers[key];
+
+                    if (typeof header === 'function') {
+                        xhr.setRequestHeader(key, header());
+                    } else {
+                        xhr.setRequestHeader(key, header);
+                    }
                 }
             }
         }
