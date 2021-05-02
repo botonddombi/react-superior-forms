@@ -38,7 +38,7 @@ export type FormProps = {
     onFail?: Callback,
 
     onSend?: (data: object) => void,
-    onSubmit?: () => void|boolean,
+    onSubmit?: (onSubmitCallback: (event?: React.SyntheticEvent) => void) => void|boolean,
 
     processBeforeSend?: (data: collectMapValue) => collectMapValue,
 
@@ -308,17 +308,17 @@ function Form(props: FormProps, ref: React.RefObject<FormHandle>) : JSX.Element 
      * The form is not necessarily submitted with the original submit event, this is just a safe fallback.
      */
     const onSubmit = useCallback((event?: React.SyntheticEvent) => {
-        const onSubmitCallback = props.onSubmit ?? formDefaults.onSubmit;
-
-        if (typeof onSubmitCallback === 'function') {
-            if (onSubmitCallback() === false) {
-                return;
-            }
-        }
-
         if (event) {
             event.preventDefault();
             event.stopPropagation();
+        }
+        
+        const onSubmitCallback = props.onSubmit ?? formDefaults.onSubmit;
+
+        if (typeof onSubmitCallback === 'function') {
+            if (onSubmitCallback(onSubmit) === false) {
+                return;
+            }
         }
 
         if (submitPhase === SubmitPhase.Loading) {
