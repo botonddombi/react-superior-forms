@@ -138,10 +138,10 @@ any invalid input (recursively)
 | json | Whether to submit the data in JSON (also sets the Content-type header to application/json) | boolean | false = submits FormData<br/>true = submits JSON | false |
 | headers | The headers to send with the submitted request | object | <code>{'X-CSRF-TOKEN': csrfToken}</code> | null |
 | className | The classname to append to the list of classes. | string | "my-form" | null |
-| onSuccess | The function to call when the submit results in success (Status is 200) | function | (event, data) => console.log(event, data) | null | 
-| onFail | The function to call when the submit results in failure (Status is not 200) | function | (event, data) => console.log(event, data) | null | 
+| onSuccess | The function to call when the submit results in success (Status is 200) | function | (response, event, data) => console.log(event, data) | null | 
+| onFail | The function to call when the submit results in failure (Status is not 200) | function | (response, event, data) => console.log(event, data) | null | 
 | onSend | The function to call before sending the XHR | function | (data) => console.log(data) | null |
-| onSubmit | The function to call when trying to submit | function | () => console.log('Trying to submit!') | null |
+| onSubmit | The function to call when trying to submit. If it returns 'false' then the form will not proceed to submit. | function | () => console.log('Trying to submit!') | null |
 | inputDefaults | The default props the **<Input\/>** components will inherit. | object | <code>{validate : true, hideValidateMessage: true, required: true, disabled: true, process: true, format: true}</code><br/>Check out the **<Input/\>** props here. | null |
 
 ## 3.2. Input
