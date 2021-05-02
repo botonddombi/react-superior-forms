@@ -28,7 +28,7 @@ export type CustomInputOptions = Omit<InputOptions, 'type'> & {
     component: React.ReactElement
 };
 
-type FormBuilderProps = Omit<FormProps, 'children'> & {
+export type FormBuilderProps = Omit<FormProps, 'children'> & {
     inputGroups: Array<InputGroupOptions>
     submitStatus?: boolean
 };
