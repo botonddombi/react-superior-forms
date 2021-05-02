@@ -22,14 +22,20 @@ import InputGroupRepeater, {InputGroupRepeaterFailedValidators}
 import {FormContext, FormDefaultsContext} from './context';
 import {SubmitPhase, InputValidatorTypes} from '../../includes/constants/enums';
 
+type Callback = (
+    response: string|object,
+    event: ProgressEvent<XMLHttpRequest>,
+    data: object
+) => void;
+
 export type FormProps = {
     route: string,
     method?: string,
     json?: boolean,
     acceptJson?: boolean,
 
-    onSuccess?: (event: ProgressEvent<XMLHttpRequest & {responseJSON?: any}>, data: object) => void,
-    onFail?: (event: ProgressEvent<XMLHttpRequest & {responseJSON?: any}>, data: object) => void,
+    onSuccess?: Callback,
+    onFail?: Callback,
 
     onSend?: (data: object) => void,
     onSubmit?: () => void,
@@ -252,12 +258,14 @@ function Form(props: FormProps, ref: React.RefObject<FormHandle>) : JSX.Element 
             }
         }
 
-        xhr.onloadend = function(event : ProgressEvent<XMLHttpRequest & {responseJSON?: any}>) {
+        xhr.onloadend = function(event : ProgressEvent<XMLHttpRequest>) {
+            let response = event.target.responseText;
+
             if (props.acceptJson ?? formDefaults.acceptJson ?? props.json) {
                 try {
-                    event.target.responseJSON = JSON.parse(event.target.responseText);
+                    response = JSON.parse(response);
                 } catch (error) {
-                    event.target.responseJSON = null;
+                    response = null;
                 }
             }
 
@@ -265,13 +273,13 @@ function Form(props: FormProps, ref: React.RefObject<FormHandle>) : JSX.Element 
                 setSubmitPhase(SubmitPhase.Success);
 
                 if (typeof props.onSuccess === 'function') {
-                    props.onSuccess(event, data);
+                    props.onSuccess(response, event, data);
                 }
             } else {
                 setSubmitPhase(SubmitPhase.Fail);
 
                 if (typeof props.onFail === 'function') {
-                    props.onFail(event, data);
+                    props.onFail(response, event, data);
                 }
             }
         };
