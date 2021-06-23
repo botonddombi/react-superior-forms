@@ -17,7 +17,7 @@
     padding: 0.4em 3em;
     border: 1px solid $color-border;
     margin-top: 1em;
-    background: $color-text;
+    background: $color-background;
     border-radius: 5px;
     outline: 0;
 
@@ -27,7 +27,7 @@
         left: 50%;
         width: 20px;
         height: 20px;
-        border: 2px solid $color-text;
+        border: 2px solid $color-background;
         border-top-color: transparent;
         animation: rotate 1s linear infinite;
         border-radius: 50%;
@@ -39,7 +39,7 @@
     &--loading {
         border-color: $color-outline;
         background: $color-outline;
-        color: $color-text;
+        color: $color-background;
     }
 
     &:active {

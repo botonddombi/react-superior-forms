@@ -20,7 +20,7 @@ type FormDefaultsContextType = {
     acceptJson?: boolean,
     headers?: {[key: string] : string | (() => string)},
 
-    onSubmit?: (onSubmitCallback: (event?: React.SyntheticEvent) => void) => void|boolean,
+    onSubmit?: (onSubmitCallback: () => void) => void|boolean,
 };
 
 export const FormDefaultsContext : React.Context<FormDefaultsContextType> =

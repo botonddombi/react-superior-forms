@@ -4,6 +4,10 @@ export enum InputTypes {
     Password = 'password',
     Text = 'text',
     Number = 'number',
+
+    Checkbox = 'checkbox',
+    Switch = 'switch',
+
     Custom = 'custom'
 }
 

@@ -1,7 +1,7 @@
 import React, {useImperativeHandle, useRef, useCallback} from 'react';
 import classNames from 'classnames';
 
-import styles from 'styles/form/layout/inputs/input.scss';
+import styles from 'styles/form/layout/input.scss';
 
 import type {InputComponentProps} from '../input/input-component-wrapper';
 
@@ -11,17 +11,20 @@ import Input, {InputHandle} from '../input';
 import {InputTypes} from '../../../../includes/constants/enums';
 import {InputComponent} from '../input/input-component-wrapper';
 
-type DefaultInputTypes = 'text' | 'password';
+type DefaultInputTypes = 'text' | 'password' | 'checkbox';
+
+type Target = EventTarget & HTMLInputElement;
 
 type InputWrapperProps = Omit<InputType, 'component'>;
 
-type BasicInputProps = InputWrapperProps & {
+type BasicInputExtendProps = {
+    resolveValue?: (target: Target) => boolean|string,
     defaultType: DefaultInputTypes,
-};
+}
 
-type BasicInputComponentProps = InputComponentProps & {
-    defaultType: DefaultInputTypes,
-};
+type BasicInputProps = InputWrapperProps & BasicInputExtendProps;
+
+type BasicInputComponentProps = InputComponentProps & BasicInputExtendProps;
 
 /**
  * The input tag for the basic input.
@@ -50,8 +53,9 @@ const BasicInputComponent = React.forwardRef((
      * @param {React.ChangeEvent<HTMLInputElement>} event The original 'change' event.
      */
     const onChange = useCallback((event : React.ChangeEvent<HTMLInputElement>) => {
-        props.onChange(event.target.value);
-    }, [props.onChange]);
+        const {target} = event;
+        props.onChange(props.resolveValue ? props.resolveValue(target) : target.value);
+    }, [props.onChange, props.resolveValue]);
 
     return <input
         className={
@@ -151,3 +155,24 @@ export const PasswordInput = React.forwardRef(
 );
 
 PasswordInput.displayName = 'PasswordInput';
+
+/**
+ * A simple password input.
+ * @param {InputWrapperProps} props
+ * @return {JSX.Element}
+ */
+export const CheckboxInput = React.forwardRef(
+    (props : InputWrapperProps, ref : React.RefObject<InputHandle>) => {
+        const resolveValue = useCallback((target: Target) => target.checked, []);
+
+        return <BasicInput
+            defaultType={'checkbox'}
+            ref={ref}
+            type={InputTypes.Checkbox}
+            resolveValue={resolveValue}
+            {...props}
+        />;
+    },
+);
+
+CheckboxInput.displayName = 'CheckboxInput';

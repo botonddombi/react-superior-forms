@@ -38,7 +38,7 @@ export type FormProps = {
     onFail?: Callback,
 
     onSend?: (data: object) => void,
-    onSubmit?: (onSubmitCallback: (event?: React.SyntheticEvent) => void) => void|boolean,
+    onSubmit?: (onSubmitCallback: () => void) => void|boolean,
 
     processBeforeSend?: (data: collectMapValue) => collectMapValue,
 
@@ -302,25 +302,7 @@ function Form(props: FormProps, ref: React.RefObject<FormHandle>) : JSX.Element 
         }
     }
 
-    /**
-     * The handling of the submit event.
-     * @param {React.SyntheticEvent} event The original submit or click event.
-     * The form is not necessarily submitted with the original submit event, this is just a safe fallback.
-     */
-    const onSubmit = useCallback((event?: React.SyntheticEvent) => {
-        if (event) {
-            event.preventDefault();
-            event.stopPropagation();
-        }
-        
-        const onSubmitCallback = props.onSubmit ?? formDefaults.onSubmit;
-
-        if (typeof onSubmitCallback === 'function') {
-            if (onSubmitCallback(onSubmit) === false) {
-                return;
-            }
-        }
-
+    const onSubmitWithoutCallback = () => {
         if (submitPhase === SubmitPhase.Loading) {
             return;
         }
@@ -344,7 +326,29 @@ function Form(props: FormProps, ref: React.RefObject<FormHandle>) : JSX.Element 
         }
 
         sendXhr();
-    }, [props, inputComponents]);
+    };
+
+    /**
+     * The handling of the submit event.
+     * @param {React.SyntheticEvent} event The original submit or click event.
+     * The form is not necessarily submitted with the original submit event, this is just a safe fallback.
+     */
+    const onSubmit = useCallback((event?: React.SyntheticEvent) => {
+        if (event) {
+            event.preventDefault();
+            event.stopPropagation();
+        }
+
+        const onSubmitCallback = props.onSubmit ?? formDefaults.onSubmit;
+
+        if (typeof onSubmitCallback === 'function') {
+            if (onSubmitCallback(onSubmitWithoutCallback) === false) {
+                return;
+            }
+        }
+
+        onSubmitWithoutCallback();
+    }, [props, formDefaults, inputComponents]);
 
     /**
      * Captures the validation of all inputs placed in this form.

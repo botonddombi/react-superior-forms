@@ -1,5 +1,6 @@
 import Input from '../input';
-import {NumberInput, TextInput, EmailInput, PasswordInput} from './basic';
+import {NumberInput, TextInput, EmailInput, PasswordInput, CheckboxInput} from './basic';
+import SwitchInput from './switch';
 
 export {
     Input,
@@ -8,4 +9,7 @@ export {
     TextInput,
     EmailInput,
     PasswordInput,
+    CheckboxInput,
+
+    SwitchInput,
 };

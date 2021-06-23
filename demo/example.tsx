@@ -5,7 +5,7 @@ import ReactDOM from 'react-dom';
 
 import './global.scss';
 
-import Form, {FormBuilder, InputTypes, InputGroup, InputGroupRepeater, NumberInput, TextInput, EmailInput, PasswordInput, SubmitButton, SubmitStatus, Input} from '../src/js/main';
+import Form, {FormBuilder, InputTypes, InputGroup, InputGroupRepeater, NumberInput, CheckboxInput, TextInput, EmailInput, PasswordInput, SubmitButton, SubmitStatus, Input, SwitchInput} from '../src/js/main';
 
 // const form =
 // <Form route="/create/user" json={true}>
@@ -18,19 +18,23 @@ import Form, {FormBuilder, InputTypes, InputGroup, InputGroupRepeater, NumberInp
 //     <SubmitButton/>
 // </Form>;
 
-const form =
-<Form route="/create/user" json={true}>
-    {/* <InputGroup name="user">
-        <label>Username</label>
-        <TextInput name="name" validate={'max:50'} format={true}/>
-    </InputGroup> */}
-    <InputGroup name="user_preferences">
-        <label>Favourite Number</label>
-        <NumberInput name="favourite_number" validate={true} process={true}/>
-    </InputGroup>
+// const form =
+// <Form route="/create/user" json={true}>
+//     {/* <InputGroup name="user">
+//         <label>Username</label>
+//         <TextInput name="name" validate={'max:50'} format={true}/>
+//     </InputGroup> */}
+//     <InputGroup name="user_preferences">
+//         <label>Favourite Number</label>
+//         <NumberInput name="favourite_number" validate={true} process={true}/>
 
-    <SubmitButton/>
-</Form>;
+//         <label>Yes/No</label>
+//         <CheckboxInput name="yes_or_no1" validate={true} process={true}/>
+//         <SwitchInput name="yes_or_no2"/>
+//     </InputGroup>
+
+//     <SubmitButton/>
+// </Form>;
 
 // const form =
 // <Form route="/create/users" json={true}>
@@ -142,67 +146,73 @@ const form =
 //     <PasswordInput name="password"/>
 // </Form>;
 
-// const form = <FormBuilder
-//     route="/test"
-//     inputGroups={[
-//         {
-//             repeater: {
-//                 entries: 1,
-//                 legend: 'Entry',
-//             },
-//             legend: 'My first input group',
-//             className: 'my-group',
-//             name: 'group-name',
-//             inputs: [
-//                 {
-//                     label: 'Username',
-//                     name: 'username',
-//                     type: InputTypes.Text,
-//                     wrapperClassName: 'my-wrapper',
-//                     className: 'my-input',
-//                     before: <h1>Hello world!</h1>,
-//                     defaultValue: 'test',
-//                     // onChange: (value) => console.log(value),
-//                     // onValidate: (validators) => console.log(validators),
-//                 },
-//                 {
-//                     label: 'Email',
-//                     name: 'email',
-//                     type: InputTypes.Email,
-//                     defaultValue: 'info@yahoo.com',
-//                     className: 'email-input',
-//                     validate: true,
-//                     format: true,
-//                     process: true,
-//                     // onChange: (value) => console.log(value),
-//                     // onValidate: (validators) => console.log(validators),
-//                 },
-//             ],
-//             inputGroups: [
-//                 {
-//                     legend: 'My first nested input group',
-//                     className: 'my-nested-group',
-//                     name: 'sub-group-name',
-//                     inputs: [
-//                         {
-//                             label: 'Username',
-//                             name: 'username',
-//                             type: InputTypes.Text,
-//                             wrapperClassName: 'my-wrapper',
-//                             className: 'my-input',
-//                             before: <h1>Hello world!</h1>,
-//                             defaultValue: '',
-//                             required: true,
-//                             validate: true,
-//                             // onChange: (value) => console.log(value),
-//                             // onValidate: (validators) => console.log(validators),
-//                         },
-//                     ],
-//                 },
-//             ],
-//         },
-//     ]}
-// />;
+const form = <FormBuilder
+    route="/test"
+    submitText="Submit Form"
+    inputGroups={[
+        {
+            repeater: {
+                entries: 1,
+                legend: 'Entry',
+            },
+            legend: 'My first input group',
+            className: 'my-group',
+            name: 'group-name',
+            inputs: [
+                {
+                    label: 'Is Happy',
+                    name: 'is_happy',
+                    type: InputTypes.Switch,
+                },
+                {
+                    label: 'Username',
+                    name: 'username',
+                    type: InputTypes.Text,
+                    wrapperClassName: 'my-wrapper',
+                    className: 'my-input',
+                    before: <h1>Hello world!</h1>,
+                    defaultValue: 'test',
+                    // onChange: (value) => console.log(value),
+                    // onValidate: (validators) => console.log(validators),
+                },
+                {
+                    label: 'Email',
+                    name: 'email',
+                    type: InputTypes.Email,
+                    defaultValue: 'info@yahoo.com',
+                    className: 'email-input',
+                    validate: true,
+                    format: true,
+                    process: true,
+                    // onChange: (value) => console.log(value),
+                    // onValidate: (validators) => console.log(validators),
+                },
+            ],
+            inputGroups: [
+                {
+                    legend: 'My first nested input group',
+                    className: 'my-nested-group',
+                    name: 'sub-group-name',
+                    inputs: [
+                        {
+                            label: 'Username',
+                            name: 'username',
+                            type: InputTypes.Text,
+                            wrapperClassName: 'my-wrapper',
+                            className: 'my-input',
+                            before: <h1>Hello world!</h1>,
+                            defaultValue: '',
+                            required: true,
+                            validate: true,
+                            // onChange: (value) => console.log(value),
+                            // onValidate: (validators) => console.log(validators),
+                        },
+                    ],
+                },
+            ],
+        },
+    ]}
+/>;
 
 // const YourCustomInputComponent = React.forwardRef((props:any, ref:any) => {
 //     return <input type="text" disabled={props.disabled} onChange={(ev) => props.onChange(ev.target.value)} value={props.value ?? ''} ref={ref}/>;

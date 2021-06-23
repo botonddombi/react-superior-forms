@@ -7,6 +7,8 @@ import {
     TextInput,
     EmailInput,
     PasswordInput,
+    CheckboxInput,
+    SwitchInput,
 } from './tsx/form/layout/input-types';
 
 import {InputTypes} from './includes/constants/enums';
@@ -37,6 +39,9 @@ export {
     TextInput,
     EmailInput,
     PasswordInput,
+    CheckboxInput,
+
+    SwitchInput,
 
     SubmitButton,
 

@@ -6,7 +6,9 @@ import type {InputType} from '../form/layout/input';
 import type {InputWrapperType} from './layout/input-wrapper';
 import {InputGroupOptions} from './layout/input-group';
 
-import {Input, TextInput, NumberInput, EmailInput, PasswordInput} from '../form/layout/input-types';
+import {
+    Input, TextInput, NumberInput, EmailInput, PasswordInput, CheckboxInput, SwitchInput,
+} from '../form/layout/input-types';
 
 import Form, {FormProps, FormHandle} from '../form';
 
@@ -18,7 +20,9 @@ import SubmitButton from '../form/layout/buttons/submit-button';
 import SubmitStatus from '../form/layout/status/submit-status';
 
 export type InputOptions = Omit<InputType, 'type'> & InputWrapperType & {
-    type: InputTypes.Text|InputTypes.Email|InputTypes.Number|InputTypes.Password,
+    type:
+        InputTypes.Text|InputTypes.Email|InputTypes.Number|
+        InputTypes.Password|InputTypes.Checkbox|InputTypes.Switch
 
     className?: string,
 };
@@ -29,7 +33,8 @@ export type CustomInputOptions = Omit<InputOptions, 'type'> & {
 };
 
 export type FormBuilderProps = Omit<FormProps, 'children'> & {
-    inputGroups: Array<InputGroupOptions>
+    inputGroups: Array<InputGroupOptions>,
+    submitText?: string,
     submitStatus?: boolean
 };
 
@@ -48,6 +53,10 @@ function resolveInput(input : InputOptions|CustomInputOptions) : JSX.Element {
         return <EmailInput {...input}/>;
     case InputTypes.Password:
         return <PasswordInput {...input}/>;
+    case InputTypes.Checkbox:
+        return <CheckboxInput {...input}/>;
+    case InputTypes.Switch:
+        return <SwitchInput {...input}/>;
     default:
         return <Input {...input}/>;
     }
@@ -124,7 +133,7 @@ function FormBuilder(props: FormBuilderProps, ref: React.RefObject<FormHandle>) 
         ref={ref}
     >
         {renderInputGroups(inputGroups)}
-        <SubmitButton/>
+        {props.submitText ? <SubmitButton>{props.submitText}</SubmitButton> : <SubmitButton/>}
         {(props.submitStatus ?? true) ? <SubmitStatus/> : null}
     </Form>;
 }

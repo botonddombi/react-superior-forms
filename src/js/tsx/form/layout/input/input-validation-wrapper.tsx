@@ -11,7 +11,7 @@ import {
 
 import {assertValidation, getValidationMessage} from '../../../../includes/modules/input-validator';
 
-import styles from 'styles/form/layout/inputs/input.scss';
+import styles from 'styles/form/layout/input.scss';
 
 import type {InputFailedValidators} from './index';
 
