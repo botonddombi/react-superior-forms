@@ -100,8 +100,6 @@ function InputGroupRepeater(
     const fieldset : React.RefObject<HTMLFieldSetElement> = useRef();
     const inputGroups : React.RefObject<Array<InputGroupHandle>> = useRef();
 
-    console.log(inputGroups);
-
     const entryCount = props.defaultValue ?
         props.defaultValue.length :
         (props.entries ?? 1);
