@@ -1,6 +1,6 @@
 {
   "name": "react-superior-forms",
-  "version": "1.2.1",
+  "version": "1.2.2",
   "description": "A simple yet convenient way to build forms in react.",
   "main": "lib/js/main.js",
   "types": "lib/js/main.d.ts",
