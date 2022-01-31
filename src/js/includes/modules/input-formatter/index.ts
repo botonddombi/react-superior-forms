@@ -27,7 +27,7 @@ export function format(
         break;
     case InputFormatterTypes.Maximum:
         if (formatter.arguments && formatter.arguments.length) {
-            if (type === InputTypes.Number && value !== '') {
+            if (type === InputTypes.Number && value && !isNaN(value)) {
                 return Math.min(formatter.arguments[0], value);
             }
 

@@ -72,7 +72,7 @@ const BasicInputComponent = React.forwardRef((
 
         name={props.name}
 
-        value={props.value ?? ''}
+        value={String(props.value ?? '')}
 
         type={props.defaultType}
 
