@@ -6,6 +6,7 @@ import {
     NumberInput,
     TextInput,
     EmailInput,
+    FileInput,
     PasswordInput,
     CheckboxInput,
     SwitchInput,
@@ -38,6 +39,7 @@ export {
     NumberInput,
     TextInput,
     EmailInput,
+    FileInput,
     PasswordInput,
     CheckboxInput,
 

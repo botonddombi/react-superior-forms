@@ -11,14 +11,14 @@ import Input, {InputHandle} from '../input';
 import {InputTypes} from '../../../../includes/constants/enums';
 import {InputComponent} from '../input/input-component-wrapper';
 
-type DefaultInputTypes = 'text' | 'password' | 'checkbox';
+type DefaultInputTypes = 'text' | 'password' | 'checkbox' | 'file';
 
 type Target = EventTarget & HTMLInputElement;
 
 type InputWrapperProps = Omit<InputType, 'component'>;
 
 type BasicInputExtendProps = {
-    resolveValue?: (target: Target) => boolean|string,
+    resolveValue?: (target: Target) => boolean|string|FileList,
     defaultType: DefaultInputTypes,
 }
 
@@ -57,6 +57,14 @@ const BasicInputComponent = React.forwardRef((
         props.onChange(props.resolveValue ? props.resolveValue(target) : target.value);
     }, [props.onChange, props.resolveValue]);
 
+    const optionalProps : Record<string, string | boolean> = {};
+
+    if (props.defaultType !== 'file') {
+        optionalProps.value = String(props.value ?? '');
+    } else {
+        optionalProps.multiple = props.multiple;
+    }
+
     return <input
         className={
             classNames(
@@ -72,8 +80,6 @@ const BasicInputComponent = React.forwardRef((
 
         name={props.name}
 
-        value={String(props.value ?? '')}
-
         type={props.defaultType}
 
         required={props.required}
@@ -82,6 +88,8 @@ const BasicInputComponent = React.forwardRef((
         onChange={onChange}
 
         ref={input}
+
+        {...optionalProps}
     />;
 });
 
@@ -176,3 +184,28 @@ export const CheckboxInput = React.forwardRef(
 );
 
 CheckboxInput.displayName = 'CheckboxInput';
+
+type FileInputProps = InputWrapperProps & {
+  multiple?: boolean
+}
+
+/**
+ * A simple password input.
+ * @param {FileInputProps} props
+ * @return {JSX.Element}
+ */
+export const FileInput = React.forwardRef(
+    (props : FileInputProps, ref : React.RefObject<InputHandle>) => {
+        const resolveValue = useCallback((target: Target) => target.files, []);
+
+        return <BasicInput
+            defaultType={'file'}
+            ref={ref}
+            type={InputTypes.File}
+            resolveValue={resolveValue}
+            {...props}
+        />;
+    },
+);
+
+FileInput.displayName = 'FileInput';

@@ -118,7 +118,11 @@ export function mapRefs(
  * @param {string} parentKey The parent key of the current data.
  */
 function fillFormData(data: any, formData: FormData, parentKey: string = null) {
-    if (typeof data === 'object') {
+    if (typeof data === 'object' && data !== null) {
+        if (data instanceof FileList) {
+            Array.from(data).forEach((file) => formData.append((data.length > 1) ? `${parentKey}[]` : parentKey, file));
+        }
+
         Object.keys(data).forEach((key) => {
             fillFormData(data[key], formData, parentKey ? `${parentKey}[${key}]` : key);
         });

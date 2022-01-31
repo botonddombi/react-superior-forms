@@ -42,6 +42,7 @@ export type InputComponentProps = {
 
     disabled?: boolean,
     required?: boolean,
+    multiple?: boolean,
 
     onChange?: (value: any) => void,
 };

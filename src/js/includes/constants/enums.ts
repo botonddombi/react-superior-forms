@@ -7,6 +7,7 @@ export enum InputTypes {
 
     Checkbox = 'checkbox',
     Switch = 'switch',
+    File = 'file',
 
     Custom = 'custom'
 }
