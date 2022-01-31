@@ -100,6 +100,8 @@ function InputGroupRepeater(
     const fieldset : React.RefObject<HTMLFieldSetElement> = useRef();
     const inputGroups : React.RefObject<Array<InputGroupHandle>> = useRef();
 
+    console.log(inputGroups);
+
     const entryCount = props.defaultValue ?
         props.defaultValue.length :
         (props.entries ?? 1);
@@ -154,12 +156,12 @@ function InputGroupRepeater(
      * Removes an entry from the targeted index.
      * @param {number} index The targeted inex.
      */
-    function removeEntry(index: number) {
+    const removeEntry = useCallback((index: number) => {
         const newEntries = [...entries];
         newEntries.splice(index, 1);
 
         setEntries(newEntries);
-    }
+    }, [entries]);
 
     /**
      * Adds a new entry to the end of the list.
@@ -170,7 +172,7 @@ function InputGroupRepeater(
 
         setEntries(newEntries);
         setEntryCounter(entryCounter + 1);
-    }, []);
+    }, [entries]);
 
     const renderedInputGroups = entries.map((key, index) => {
         const inputGroup = <InputGroup
