@@ -15,6 +15,7 @@ export function process(
     if (processor === true) {
         switch (type) {
         case InputTypes.Number:
+        case InputTypes.Switch:
             return Number(value);
         }
     } else {
