@@ -207,13 +207,75 @@ function Form(props: FormProps, ref: React.RefObject<FormHandle>) : JSX.Element 
     }));
 
     /**
+     * Deep merges message objects.
+     * @param {object} a
+     * @param {object} b
+     * @return {object} Param a and b merged.
+     */
+    function deepMergeMessages(a:object, b: object): object {
+        for (const key in b) {
+            if (Object.prototype.hasOwnProperty.call(b, key)) {
+                if (typeof a[key] === 'undefined') {
+                    a[key] = b[key];
+                } else {
+                    if (typeof a[key] === 'object' && typeof b[key] === 'object') {
+                        if (Array.isArray(a[key]) && Array.isArray(b[key])) {
+                            a[key] = [...a[key], ...b[key]];
+                        } else {
+                            a[key] = deepMergeMessages(a[key], b[key]);
+                        }
+                    }
+                }
+            }
+        }
+
+        return a;
+    }
+
+    /**
+     * Extracts message keys to true object.
+     * As an example, extracts: users.0.name to {users: [{name: ...}]}
+     * @param {object} messages The object containing the error messages.
+     * @return {object} The extracted messages.
+     */
+    function extractMessages(messages: object): object {
+        const finalMessages = {};
+
+        for (const key in messages) {
+            if (Object.prototype.hasOwnProperty.call(messages, key)) {
+                const value = messages[key];
+                const match = key.match(/^(.*?)\.(.*)$/);
+
+                if (match) {
+                    const extractedMessages = extractMessages({[match[2]]: value});
+
+                    if (typeof finalMessages[match[1]] === 'object') {
+                        finalMessages[match[1]] = deepMergeMessages(
+                            messages[match[1]],
+                            extractedMessages,
+                        );
+                    } else {
+                        finalMessages[match[1]] = extractedMessages;
+                    }
+                } else {
+                    finalMessages[key] = value;
+                }
+            }
+        }
+
+        return finalMessages;
+    }
+
+    /**
      * Shifts temporary failed validators for the input components matched.
      * The object parameter should match the structure of the sent data object.
      * @param {object} messages The object containing the error messages.
      */
     function shiftFailedValidators(messages: object) {
         const components = collect(inputComponents.current, true);
-        shiftFailedValidatorsRecursive(components, messages);
+        const extractedMessages = extractMessages(messages);
+        console.log(components, extractedMessages);
+        shiftFailedValidatorsRecursive(components, extractedMessages);
     }
 
     /**
